@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    {% for object in object_list %}
+      {{ object }}
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
+
+{% block navbar %}
+  <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}?next={% url 'users_login' %}" class="navbar-link">logout</a>)</p>
+{% endblock navbar %}
