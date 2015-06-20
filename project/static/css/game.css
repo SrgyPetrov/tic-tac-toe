@@ -10,3 +10,7 @@
     width: 150px;
     vertical-align: middle !important;
 }
+
+.active-link {
+    pointer-events: none;
+}

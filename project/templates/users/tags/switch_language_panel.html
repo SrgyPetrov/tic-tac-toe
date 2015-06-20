@@ -1,0 +1,10 @@
+{% load i18n %}
+
+{% get_available_languages as languages %}
+{% get_current_language as current_language %}
+
+<ul class="nav navbar-nav">
+  {% for lang_code, lang_name in languages %}
+    <li {% if lang_code == current_language %}class="active active-link"{% endif %}><a href="/{{ lang_code }}{{ base_url }}">{{ lang_name }}</a></li>
+  {% endfor %}
+</ul>

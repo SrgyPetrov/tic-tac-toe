@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block content %}
 
 <div class="row">
@@ -11,5 +12,5 @@
 {% endblock content %}
 
 {% block navbar %}
-  <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}?next={% url 'users_login' %}" class="navbar-link">logout</a>)</p>
+  <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
 {% endblock navbar %}

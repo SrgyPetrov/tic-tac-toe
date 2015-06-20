@@ -1,12 +1,11 @@
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
 class User(AbstractUser):
 
-    logged_in = models.BooleanField(_(u'logged in'), default=False)
+    logged_in = models.BooleanField(default=False)
 
 
 def login_user(sender, request, user, **kwargs):

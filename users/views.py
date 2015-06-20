@@ -1,4 +1,5 @@
 from django.contrib.messages.views import SuccessMessageMixin
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
 
@@ -9,7 +10,7 @@ class RegisterFormView(SuccessMessageMixin, FormView):
 
     form_class = RegistrationForm
     template_name = "users/registration.html"
-    success_message = "%(username)s was created successfully"
+    success_message = _(u"User %(username)s was created successfully")
 
     def form_valid(self, form):
         form.save()
