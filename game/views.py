@@ -84,11 +84,37 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(GameDetailView, self).get_context_data(**kwargs)
+        self.player = 'x' if self.object.first_user == self.request.user else 'o'
+        self.playfield = self.object.get_playfield()
+        status, notification_text = self.get_notification()
         context.update({
-            'playfield': self.object.get_playfield(),
-            'player': 'x' if self.object.first_user == self.request.user else 'o',
+            'playfield': self.playfield,
+            'player': self.player,
+            'notification_text': notification_text,
+            'status': status
         })
         return context
+
+    def get_notification(self):
+        if self.playfield.is_game_over():
+            return self.get_result()
+        else:
+            return self.get_current_move()
+
+    def get_current_move(self):
+        if self.player == 'x':
+            return 'warning', _(u'Your turn.')
+        else:
+            return 'warning', _(u'Your opponents turn.')
+
+    def get_result(self):
+        winner = self.playfield.get_winner()
+        if winner and winner == self.player:
+            return 'success', _(u'You won!')
+        elif winner and winner != self.player:
+            return 'danger', _(u'You lost the game.')
+        else:
+            return 'info', _(u'Its a tie!')
 
 
 @login_required

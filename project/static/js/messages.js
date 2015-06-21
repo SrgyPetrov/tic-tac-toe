@@ -73,7 +73,9 @@ function SwapUser() {
     }
 }
 
-socket.send("subscribe:" + user_id);
+if (typeof user_id != 'undefined') {
+    socket.send("subscribe:" + user_id);
+}
 
 function SetNotificationMessage(message) {
     $("#notifications").html("<div>" + message + "</div>");

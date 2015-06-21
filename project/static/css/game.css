@@ -1,14 +1,19 @@
 .active-link {
     pointer-events: none;
 }
+
+.game-container {
+  width: 438px;
+}
+
 .playfield {
   height: 330px;
   width: 330px;
 }
 @media (min-width: 450px) {
   .playfield {
-    width: 535px;
-    height: 535px;
+    width: 410px;
+    height: 410px;
   }
 }
 .playfield div {
@@ -17,7 +22,7 @@
   cursor: pointer;
   color: #fff;
   height: 90px;
-  margin: 5px;
+  margin: 0 5px 10px;
   display: block;
   float: left;
   width: 90px;
@@ -31,9 +36,9 @@
 }
 @media (min-width: 450px) {
   .playfield div {
-    height: 157px;
-    width: 157px;
-    line-height: 115px;
+    height: 126px;
+    line-height: 84px;
+    width: 126px;
     font-size: 200px;
   }
 }

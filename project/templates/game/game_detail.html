@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-  <div class="row">
-    <div class="col-md-5 col-md-offset-6 playfield">
-      {% for cell in playfield.cells %}
-        <div id="cell{{ forloop.counter0 }}" onclick="MakeMove(this, '{{ forloop.counter0 }}')" class="checked-{{ cell }}">{{ cell }}</div>
-      {% endfor %}
-    </div>
+  <div class="playfield">
+    {% for cell in playfield.cells %}
+      <div id="cell{{ forloop.counter0 }}" onclick="MakeMove(this, '{{ forloop.counter0 }}')" class="checked-{{ cell }}">{{ cell }}</div>
+    {% endfor %}
   </div>
 {% endblock content %}
 
@@ -25,20 +23,7 @@
   <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
 {% endblock navbar %}
 
-{% block messages %}
-    {% if playfield.is_game_over %}
-        {% with playfield.get_winner as winner %}
-            {% if winner %}
-                The winner is: {{ playfield.get_winner }}
-            {% else %}
-                Its a tie!
-            {% endif %}
-        {% endwith %}
-    {% else %}
-        {% if player == 'x' %}
-            Your turn!
-        {% else %}
-            Your opponents turn!
-        {% endif %}
-    {% endif %}
-{% endblock %}
+{% block notifications %}
+  {% include "notifications.html" with text=notification_text status=status %}
+{% endblock notifications %}
+
