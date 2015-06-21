@@ -1,11 +1,9 @@
 .active-link {
     pointer-events: none;
 }
-
 .game-container {
   width: 438px;
 }
-
 .playfield {
   height: 330px;
   width: 330px;
@@ -48,29 +46,9 @@
 .playfield div:hover:after {
   opacity: .4;
 }
-.playfield div:after {
-  left: 0;
-  font-family: "FontAwesome";
-  font-size: 45px;
-  margin-top: -22.5px;
-  opacity: 0;
-  position: absolute;
-  text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  top: 50%;
-  width: 100%;
-}
-@media (min-width: 450px) {
-  .playfield div:after {
-    font-size: 70px;
-    margin-top: -35px;
-  }
-}
-
 .playfield .checked-x {
   background-color: #dc685a;
 }
-
 .playfield .checked-o {
   background-color: #61bcc3;
 }

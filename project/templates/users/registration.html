@@ -1,38 +1,42 @@
 {% extends "base.html" %}
 {% load widget_tweaks i18n %}
+
+
 {% block content %}
-  <div class="row">
-    <div class="col-md-4 col-md-offset-4">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <form method="POST" action=".">
-            {% csrf_token %}
-            <div class="form-group {% if form.username.errors %}has-error{% endif %}">
-              <label>{% trans "Username" %}</label>
-              {% if form.username.errors %}
-                <p class="text-danger">{{ form.username.errors.as_text|cut:'* ' }}</p>
-              {% endif %}
-              {{ form.username|add_class:"form-control" }}
-            </div>
-            <div class="form-group {% if form.password1.errors %}has-error{% endif %}">
-              <label>{% trans "Password" %}</label>
-              {% if form.password1.errors %}
-                <p class="text-danger">{{ form.password1.errors.as_text|cut:'* ' }}</p>
-              {% endif %}
-              {{ form.password1|add_class:"form-control" }}
-            </div>
-            <div class="form-group {% if form.password2.errors %}has-error{% endif %}">
-              <label>{% trans "Password confirmation" %}</label>
-              {% if form.password2.errors %}
-                <p class="text-danger">{{ form.password2.errors.as_text|cut:'* ' }}</p>
-              {% endif %}
-              {{ form.password2|add_class:"form-control" }}
-            </div>
-            <button type="submit" class="btn btn-default">{% trans "Sign up" %}</button>
-          </form>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form method="POST" action=".">
+        {% csrf_token %}
+        <div class="form-group {% if form.username.errors %}has-error{% endif %}">
+          <label>{% trans "Username" %}</label>
+          {{ form.username|add_class:"form-control" }}
         </div>
-      </div>
+        <div class="form-group {% if form.password1.errors %}has-error{% endif %}">
+          <label>{% trans "Password" %}</label>
+          {{ form.password1|add_class:"form-control" }}
+        </div>
+        <div class="form-group {% if form.password2.errors %}has-error{% endif %}">
+          <label>{% trans "Password confirmation" %}</label>
+          {{ form.password2|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-default">{% trans "Sign up" %}</button>
+      </form>
     </div>
   </div>
 {% endblock content %}
 
+{% block notifications %}
+  {% trans "Username" as username_label %}
+  {% trans "Password" as password1_label%}
+  {% trans "Password confirmation" as password2_label %}
+
+  {% if form.username.errors %}
+    {% include "notifications.html" with text=form.username.errors.as_text|cut:'* ' status='danger' head_text=username_label %}
+  {% endif %}
+  {% if form.password1.errors %}
+    {% include "notifications.html" with text=form.password1.errors.as_text|cut:'* ' status='danger' head_text=password1_label %}
+  {% endif %}
+  {% if form.password2.errors %}
+    {% include "notifications.html" with text=form.password2.errors.as_text|cut:'* ' status='danger' head_text=password2_label %}
+  {% endif %}
+{% endblock notifications %}

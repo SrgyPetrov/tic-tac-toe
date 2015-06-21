@@ -1,15 +1,6 @@
 {% extends "base.html" %}
 {% load widget_tweaks i18n %}
 {% block content %}
-  {% if form.errors %}
-    <p class="text-center text-danger">{% trans "Your username and password didn't match. Please try again." %}</p>
-  {% endif %}
-  {% if messages %}
-    {% for message in messages %}
-      <p class="text-center text-success">{{ message }}</p>
-    {% endfor %}
-  {% endif %}
-
   <div class="panel panel-default">
     <div class="panel-body">
       <form method="POST" action="{% url 'users_login' %}">
@@ -35,5 +26,14 @@
   </ul>
 {% endblock navbar %}
 
-
-
+{% block notifications %}
+  {% if form.errors %}
+    {% trans "Your username and password didn't match. Please try again." as notification_text %}
+    {% include "notifications.html" with text=notification_text status='danger' %}
+  {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      {% include "notifications.html" with text=message status='success' %}
+    {% endfor %}
+  {% endif %}
+{% endblock notifications %}
