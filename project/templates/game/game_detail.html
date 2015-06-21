@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-default game-table">
+        <table class="table table-bordered">
+          <tr>
+            {% for cell in playfield.cells %}
+              <td id="cell{{ forloop.counter0 }}">{{ cell }}</td>
+              {% if forloop.counter|divisibleby:3 %}
+                </tr><tr>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block extrajs %}
+  <script type="text/javascript">
+    var create_move_url = "{% url create_move object.pk %}";
+    var player = "{{ player }}";
+    var winner = "{{ playfield.get_winner }}";
+    var game_over = {{ playfield.is_game_over|lower }};
+    var game_id = {{ object.pk }};
+    var current_player = "x";
+  </script>
+{% endblock extrajs %}

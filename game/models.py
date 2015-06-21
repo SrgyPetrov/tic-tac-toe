@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from users.models import User
 
+from .playfield import PlayField
+
 
 class Game(models.Model):
 
@@ -17,6 +19,24 @@ class Game(models.Model):
 
     def __unicode__(self):
         return u'game {0}'.format(self.pk)
+
+    def get_playfield(self):
+        playfield = PlayField()
+        moves = self.move_set.all()
+
+        for move in moves:
+            if move.player == self.player1:
+                playfield.pieces[move.move] = 'x'
+            else:
+                playfield.pieces[move.move] = 'o'
+        return playfield
+
+
+class Invite(models.Model):
+
+    inviter = models.ForeignKey(User, related_name='inviter')
+    invitee = models.ForeignKey(User, related_name='invitee')
+    is_active = models.BooleanField(default=True)
 
 
 class Move(models.Model):

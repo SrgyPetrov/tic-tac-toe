@@ -49,6 +49,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'django.core.context_processors.static',
             ],
         },
     },
@@ -90,3 +91,5 @@ AUTH_USER_MODEL = 'users.User'
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'users_login'
+
+REDIS_HOST = 'localhost'

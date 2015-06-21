@@ -3,10 +3,25 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3">
-    {% for object in object_list %}
-      {{ object }}
-    {% endfor %}
+  <div class="col-md-10 col-md-offset-1">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{% trans "Select the user to play together" %}</h3>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+
+      <div class="list-group text-center">
+        {% for object in object_list %}
+          <a href="javascript:;" class="list-group-item user-invite" data-pk="{{ object.pk }}">{{ object.username }}</a>
+        {% endfor %}
+      </div>
+      <form class="invite-form" action="." method="POST">
+        {% csrf_token %}
+        {{ form.invitee_pk }}
+      </form>
+    </div>
   </div>
 </div>
 {% endblock content %}
