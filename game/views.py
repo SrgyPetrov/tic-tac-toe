@@ -92,21 +92,21 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
 
 @login_required
-def create_move(request, game_id):
-    game = _get_game(request.user, game_id)
+def create_move(request, pk):
+    game = _get_game(request.user, pk)
     if request.POST:
         move = int(request.POST['move'])
         red = redis.StrictRedis(settings.REDIS_HOST)
 
         # get player of move
-        tic_player = 'x' if game.player1 == request.user else 'o'
+        tic_player = 'x' if game.first_user == request.user else 'o'
 
-        Move(game=game, player=request.user, move=move).save()
+        Move(game=game, user=request.user, move=move).save()
         playfield = game.get_playfield()
         playfield.make_move(move, tic_player)
 
         # get opponent
-        opponent_user = game.player1 if tic_player == 'o' else game.player2
+        opponent_user = game.first_user if tic_player == 'o' else game.second_user
 
         # # get computer
         # computer_user = _get_computer()
@@ -115,18 +115,18 @@ def create_move(request, game_id):
         winner = playfield.get_winner()
 
         if playfield.is_game_over():
-            red.publish('%d' % request.user.id, ['game_over', game.id, winner])
-            red.publish('%d' % opponent_user.id, ['opponent_moved', game.id, tic_player, move])
-            red.publish('%d' % opponent_user.id, ['game_over', game.id, winner])
+            red.publish('%d' % request.user.id, ['game_over', game.pk, winner])
+            red.publish('%d' % opponent_user.id, ['opponent_moved', game.pk, tic_player, move])
+            red.publish('%d' % opponent_user.id, ['game_over', game.pk, winner])
         else:
-            red.publish('%d' % opponent_user.id, ['opponent_moved', game.id, tic_player, move])
+            red.publish('%d' % opponent_user.id, ['opponent_moved', game.pk, tic_player, move])
 
     return HttpResponse()
 
 
-def _get_game(user, game_id):
-    game = get_object_or_404(Game, pk=game_id)
-    if not game.player1 == user and not game.player2 == user:
+def _get_game(user, game_pk):
+    game = get_object_or_404(Game, pk=game_pk)
+    if not game.first_user == user and not game.second_user == user:
         raise Http404
     return game
 

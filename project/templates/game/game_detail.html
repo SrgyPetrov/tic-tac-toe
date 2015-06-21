@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block content %}
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -6,8 +7,8 @@
         <table class="table table-bordered">
           <tr>
             {% for cell in playfield.cells %}
-              <td id="cell{{ forloop.counter0 }}">{{ cell }}</td>
-              {% if forloop.counter|divisibleby:3 %}
+              <td id="cell{{ forloop.counter0 }}" onclick="MakeMove(this, '{{ forloop.counter0 }}')">{{ cell }}</td>
+              {% if forloop.counter|divisibleby:3 and not forloop.last %}
                 </tr><tr>
               {% endif %}
             {% endfor %}
@@ -20,7 +21,7 @@
 
 {% block extrajs %}
   <script type="text/javascript">
-    var create_move_url = "{% url create_move object.pk %}";
+    var create_move_url = "{% url 'game_create_move' object.pk %}";
     var player = "{{ player }}";
     var winner = "{{ playfield.get_winner }}";
     var game_over = {{ playfield.is_game_over|lower }};
@@ -28,3 +29,25 @@
     var current_player = "x";
   </script>
 {% endblock extrajs %}
+
+{% block navbar %}
+  <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
+{% endblock navbar %}
+
+{% block messages %}
+    {% if playfield.is_game_over %}
+        {% with playfield.get_winner as winner %}
+            {% if winner %}
+                The winner is: {{ playfield.get_winner }}
+            {% else %}
+                Its a tie!
+            {% endif %}
+        {% endwith %}
+    {% else %}
+        {% if player == 'x' %}
+            Your turn!
+        {% else %}
+            Your opponents turn!
+        {% endif %}
+    {% endif %}
+{% endblock %}

@@ -25,10 +25,10 @@ class Game(models.Model):
         moves = self.move_set.all()
 
         for move in moves:
-            if move.player == self.player1:
-                playfield.pieces[move.move] = 'x'
+            if move.user == self.first_user:
+                playfield.cells[move.move] = 'x'
             else:
-                playfield.pieces[move.move] = 'o'
+                playfield.cells[move.move] = 'o'
         return playfield
 
 
