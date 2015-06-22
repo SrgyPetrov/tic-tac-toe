@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-21 23:21+0300\n"
+"POT-Creation-Date: 2015-06-22 20:44+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,31 +51,36 @@ msgstr "игровое перемещение"
 msgid "game moves"
 msgstr "игровые перемещения"
 
-#: views.py:62
+#: utils.py:10
+msgid "You won!"
+msgstr "Вы победили!"
+
+#: utils.py:12
+msgid "You lost the game."
+msgstr "Вы проиграли."
+
+#: utils.py:14
+msgid "Its a tie!"
+msgstr "Ничья!"
+
+#: views.py:67
 msgid "Invite was successfully sent"
 msgstr "Приглашение успешно отправлено"
 
-#: views.py:63
+#: views.py:69
 #, python-brace-format
 msgid "You have a new game invite from {0} <a href=\"{1}\"> Accept?</a>"
 msgstr "Новое приглашение в игру от {0}. <a href=\"{1}\"> Принять?</a>"
 
-#: views.py:110
+#: views.py:128
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:112
+#: views.py:130
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:117
-msgid "You won!"
-msgstr "Вы победили!"
-
-#: views.py:119
-msgid "You lost the game."
-msgstr "Вы проиграли."
-
-#: views.py:121
-msgid "Its a tie!"
-msgstr "Ничья!"
+#: views.py:177
+#, python-brace-format
+msgid "A new game has started <a href='{0}'>here.</a>"
+msgstr "Новая игра началась <a href='{0}'>здесь.</a>"

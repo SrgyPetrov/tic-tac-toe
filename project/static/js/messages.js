@@ -1,42 +1,28 @@
 socket = io.connect("/game");
 
-socket.on("message", function(obj){
-    if (obj.type == "message") {
-        var data = eval(obj.data);
+if (typeof user_id != 'undefined') {
+    socket.send("subscribe:" + user_id);
+}
 
-        if (data[0] == "new_invite") {
-            SetNotificationMessage(data[1], "info");
-        }
-        else if (data[0] == "game_started") {
-            SetNotificationMessage("A new game has started <a href='" + data[1] + "'>here</a>", "info");
-        }
-        else if (data[0] == "game_over") {
-            if (data[1] == game_id) {
-                winner = data[2];
-                game_over = true;
+socket.on("new_invite", function(obj){
+    SetNotificationMessage(obj[0], "info");
+});
 
-                if (data[2] == player) {
-                    SetNotificationMessage("You won!", "success");
-                } else if (data[2] != player) {
-                    SetNotificationMessage("You lost the game.", "danger");
-                } else {
-                    SetNotificationMessage("Its a tie!", "info");
-                }
-            }
-            else {
-                SetNotificationMessage("A game has finished <a href='" + data[1] + "'>here</a>", "info");
-            }
-            $(".gameover").animate({opacity: "show"}, "slow");
-        }
-        else if (data[0] == "opponent_moved") {
-            if (data[1] == game_id) {
-                $('#cell' + data[3]).html(data[2]);
-                $('#cell' + data[3]).removeClass();
-                $('#cell' + data[3]).addClass('checked-' + data[2]);
-                SwapUser();
-            }
-        }
-    }
+socket.on("game_started", function(obj){
+    SetNotificationMessage(obj[0], "info");
+});
+
+socket.on("game_over", function(obj){
+    SetNotificationMessage(obj[0], "info");
+    $(".gameover").animate({opacity: "show"}, "slow");
+});
+
+socket.on("opponent_moved", function(obj){
+    var data = eval(obj);
+    $('#cell' + data[1]).html(data[0]);
+    $('#cell' + data[1]).removeClass();
+    $('#cell' + data[1]).addClass('checked-' + data[0]);
+    SwapUser();
 });
 
 function MakeMove(sender, move) {
@@ -53,7 +39,6 @@ function MakeMove(sender, move) {
 
 function SwapUser() {
     var swap = player == "x" ? "o" : "x";
-
     if (current_player == player) {
         current_player = swap;
         SetNotificationMessage("Your opponents turn!", "warning");
@@ -61,10 +46,6 @@ function SwapUser() {
         current_player = player;
         SetNotificationMessage("Your turn!", "warning");
     }
-}
-
-if (typeof user_id != 'undefined') {
-    socket.send("subscribe:" + user_id);
 }
 
 function SetNotificationMessage(message, status) {

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-21 23:20+0300\n"
+"POT-Creation-Date: 2015-06-22 17:59+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,15 @@ msgstr "Русский"
 msgid "Tic-Tac-Toe"
 msgstr "Крестики-Нолики"
 
-#: templates/game/game_detail.html:23 templates/game/game_user_list.html:30
+#: templates/game/game_detail.html:10
+msgid "Game over"
+msgstr "Игра закончена"
+
+#: templates/game/game_detail.html:11
+msgid "Try again?"
+msgstr "Попробуйте еще раз?"
+
+#: templates/game/game_detail.html:26 templates/game/game_user_list.html:30
 msgid "logout"
 msgstr "выход"
 

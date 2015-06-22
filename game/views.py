@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from django.conf import settings
@@ -20,20 +20,28 @@ from users.models import User
 
 from .models import Game, Move, Invite
 from .forms import InviteForm
+from .utils import get_result, get_game
+
+
+strict_redis = redis.StrictRedis(settings.REDIS_HOST)
 
 
 @namespace('/game')
 class GameNamespace(BaseNamespace):
-    def listener(self, chan):
-        red = redis.StrictRedis(settings.REDIS_HOST)
-        red = red.pubsub()
-        red.subscribe(chan)
 
-        print 'subscribed on chan ', chan
+    def listener(self, channel):
+        red = strict_redis.pubsub()
+        red.subscribe(channel)
+
+        print 'subscribed on channel ', channel
 
         while True:
-            for i in red.listen():
-                self.emit('message', i)
+            for message in red.listen():
+                if isinstance(message['data'], str):
+                    message = eval(message['data'])
+                    self.emit(message[0], message[1:])
+                else:
+                    self.emit('message', message)
 
     def recv_message(self, message):
         action, pk = message.split(':')
@@ -54,17 +62,13 @@ class UserListView(LoginRequiredMixin, FormMixin, ListView):
     template_name = 'game/game_user_list.html'
     form_class = InviteForm
 
-    def form_valid(self, invitee_pk, user):
-        invitee = get_object_or_404(User, pk=invitee_pk)
-        invite = Invite.objects.create(inviter=user, invitee=invitee)
-
-        url = reverse('accept_invite', args=[invite.pk])
+    def form_valid(self, invitee_pk):
+        invite_url = self.create_invite(invitee_pk)
         messages.add_message(self.request, messages.SUCCESS, _(u'Invite was successfully sent'))
-        message = 'You have a new game invite from {0} <a href="{1}"> Accept?</a>'.format(
-            user.username, url)
-
-        red = redis.StrictRedis(settings.REDIS_HOST)
-        red.publish('%d' % invite.invitee.id, ['new_invite', message])
+        redis_message = ugettext(
+            u'You have a new game invite from {0} <a href="{1}"> Accept?</a>'
+        ).format(self.request.user.username, invite_url)
+        strict_redis.publish('%d' % invitee_pk, ['new_invite', redis_message])
 
     def get_queryset(self):
         return User.objects.filter(logged_in=True).exclude(pk=self.request.user.pk)
@@ -78,8 +82,13 @@ class UserListView(LoginRequiredMixin, FormMixin, ListView):
         form = self.get_form()
         if not form.is_valid():
             return self.form_invalid(form)
-        self.form_valid(form.cleaned_data['invitee_pk'], request.user)
+        self.form_valid(form.cleaned_data['invitee_pk'])
         return super(UserListView, self).get(request, *args, **kwargs)
+
+    def create_invite(self, invitee_pk):
+        invitee = get_object_or_404(User, pk=invitee_pk)
+        invite = Invite.objects.create(inviter=self.request.user, invitee=invitee)
+        return reverse('accept_invite', args=[invite.pk])
 
 
 class GameDetailView(LoginRequiredMixin, DetailView):
@@ -90,7 +99,7 @@ class GameDetailView(LoginRequiredMixin, DetailView):
         context = super(GameDetailView, self).get_context_data(**kwargs)
         self.player = 'x' if self.object.first_user == self.request.user else 'o'
         self.playfield = self.object.get_playfield()
-        status, notification_text = self.get_notification()
+        notification_text, status = self.get_notification()
         context.update({
             'playfield': self.playfield,
             'player': self.player,
@@ -109,58 +118,45 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     def get_notification(self):
         if self.playfield.is_game_over():
-            return self.get_result()
+            winner = self.playfield.get_winner()
+            return get_result(self.player, winner)
         else:
             return self.get_current_move_text()
 
     def get_current_move_text(self):
         if self.player == 'x':
-            return 'warning', _(u'Your turn.')
+            return _(u'Your turn.'), 'warning'
         else:
-            return 'warning', _(u'Your opponents turn.')
-
-    def get_result(self):
-        winner = self.playfield.get_winner()
-        if winner and winner == self.player:
-            return 'success', _(u'You won!')
-        elif winner and winner != self.player:
-            return 'danger', _(u'You lost the game.')
-        else:
-            return 'info', _(u'Its a tie!')
+            return _(u'Your opponents turn.'), 'warning'
 
 
 @login_required
 def create_move(request, pk):
-    game = _get_game(request.user, pk)
+    game = get_game(request.user, pk)
     if request.POST:
         move = int(request.POST['move'])
-        red = redis.StrictRedis(settings.REDIS_HOST)
+        Move.objects.create(game=game, user=request.user, move=move)
 
-        tic_player = 'x' if game.first_user == request.user else 'o'
-
-        Move(game=game, user=request.user, move=move).save()
         playfield = game.get_playfield()
-        playfield.make_move(move, tic_player)
 
-        opponent_user = game.first_user if tic_player == 'o' else game.second_user
+        player = 'x' if game.first_user == request.user else 'o'
+        opponent = playfield.get_opponent(player)
 
-        winner = playfield.get_winner()
+        opponent_user = game.first_user if player == 'o' else game.second_user
 
         if playfield.is_game_over():
-            red.publish('%d' % request.user.id, ['game_over', game.pk, winner])
-            red.publish('%d' % opponent_user.id, ['opponent_moved', game.pk, tic_player, move])
-            red.publish('%d' % opponent_user.id, ['game_over', game.pk, winner])
+            winner = playfield.get_winner()
+            strict_redis.publish('%d' % request.user.pk,
+                                 ['game_over', get_result(player, winner)[0]])
+            strict_redis.publish('%d' % opponent_user.pk,
+                                 ['opponent_moved', player, move])
+            strict_redis.publish('%d' % opponent_user.pk,
+                                 ['game_over', get_result(opponent, winner)[0]])
         else:
-            red.publish('%d' % opponent_user.id, ['opponent_moved', game.pk, tic_player, move])
+            strict_redis.publish('%d' % opponent_user.pk,
+                                 ['opponent_moved', player, move])
 
     return HttpResponse()
-
-
-def _get_game(user, game_pk):
-    game = get_object_or_404(Game, pk=game_pk)
-    if not game.first_user == user and not game.second_user == user:
-        raise Http404
-    return game
 
 
 @login_required
@@ -176,11 +172,12 @@ def accept_invite(request, invite_pk):
             game = Game(first_user=request.user, second_user=invite.inviter)
 
         game.save()
-        url = reverse('game_detail', args=[game.pk])
 
-        red = redis.StrictRedis(settings.REDIS_HOST)
-        red.publish('%d' % invite.inviter.id, ['game_started', str(url),
-                    str(request.user.username)])
+        redis_message = ugettext(
+            u"A new game has started <a href='{0}'>here.</a>"
+        ).format(reverse('game_detail', args=[game.pk]))
+
+        strict_redis.publish('%d' % invite.inviter.id, ['game_started', redis_message])
 
         invite.delete()
 
