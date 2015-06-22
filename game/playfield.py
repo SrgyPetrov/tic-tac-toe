@@ -26,7 +26,7 @@ class PlayField(object):
         return [pos for pos in moves_to_check if self.cells[pos] == '']
 
     def is_game_over(self):
-        return self.get_winner() or not self.get_valid_moves()
+        return bool(self.get_winner()) or not self.get_valid_moves()
 
     def make_move(self, move, player):
         self.cells[move] = player

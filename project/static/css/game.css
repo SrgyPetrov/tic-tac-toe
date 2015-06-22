@@ -53,6 +53,7 @@
   background-color: #61bcc3;
 }
 .gameover {
+  display: none;
   height: 330px;
   width: 330px;
   position: absolute;

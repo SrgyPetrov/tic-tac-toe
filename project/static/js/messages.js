@@ -26,7 +26,7 @@ socket.on("message", function(obj){
             else {
                 SetNotificationMessage("A game has finished <a href='" + data[1] + "'>here</a>", "info");
             }
-            $('.playfield .gameover').removeClass('hidden');
+            $(".gameover").animate({opacity: "show"}, "slow");
         }
         else if (data[0] == "opponent_moved") {
             if (data[1] == game_id) {
