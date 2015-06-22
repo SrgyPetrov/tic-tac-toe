@@ -21,6 +21,9 @@ socket.on("opponent_moved", function(obj){
     $('#cell' + obj[1]).html(obj[0]);
     $('#cell' + obj[1]).removeClass();
     $('#cell' + obj[1]).addClass('checked-' + obj[0]);
+    if (typeof obj[2] != 'undefined') {
+        SetNotificationMessage(obj[2], "warning");
+    }
     SwapUser();
 });
 
@@ -40,10 +43,10 @@ function SwapUser() {
     var swap = player == "x" ? "o" : "x";
     if (current_player == player) {
         current_player = swap;
-        SetNotificationMessage("Your opponents turn!", "warning");
+        // SetNotificationMessage("Your opponents turn!", "warning");
     } else {
         current_player = player;
-        SetNotificationMessage("Your turn!", "warning");
+        // SetNotificationMessage("Your turn!", "warning");
     }
 }
 

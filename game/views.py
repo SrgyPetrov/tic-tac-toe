@@ -1,5 +1,4 @@
 import redis
-import random
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -111,23 +110,20 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     def get_current_player(self):
         moves = self.object.move_set.all().order_by('-id')
-        if not moves:
-            return 'x'
-        else:
+        if moves:
             return 'o' if moves[0].user == self.object.first_user else 'x'
+        return 'x'
 
     def get_notification(self):
         if self.playfield.is_game_over():
             winner = self.playfield.get_winner()
             return get_result(self.player, winner)
-        else:
-            return self.get_current_move_text()
+        return self.get_current_move_text()
 
     def get_current_move_text(self):
         if self.player == 'x':
             return _(u'Your turn.'), 'warning'
-        else:
-            return _(u'Your opponents turn.'), 'warning'
+        return _(u'Your opponents turn.'), 'warning'
 
 
 @login_required
@@ -154,8 +150,7 @@ def create_move(request, pk):
                                  ['game_over', get_result(opponent, winner)])
         else:
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['opponent_moved', player, move])
-
+                                 ['opponent_moved', player, move, ugettext(u"Your turn.")])
     return HttpResponse()
 
 
@@ -164,20 +159,13 @@ def accept_invite(request, invite_pk):
     invite = get_object_or_404(Invite, pk=invite_pk, is_active=True)
 
     if request.user == invite.invitee:
-        coin_toss = random.choice([0, 1])
-
-        if coin_toss == 0:
-            game = Game(first_user=invite.inviter, second_user=request.user)
-        else:
-            game = Game(first_user=request.user, second_user=invite.inviter)
-
-        game.save()
+        game = Game.objects.create(first_user=invite.inviter, second_user=request.user)
 
         redis_message = ugettext(
             u"A new game has started <a href='{0}'>here.</a>"
         ).format(reverse('game_detail', args=[game.pk]))
 
-        strict_redis.publish('%d' % invite.inviter.id, ['game_started', redis_message])
+        strict_redis.publish('%d' % invite.inviter.pk, ['game_started', redis_message])
 
         invite.delete()
 

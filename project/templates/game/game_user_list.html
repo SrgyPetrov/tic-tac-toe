@@ -35,6 +35,7 @@
     {% for message in messages %}
       {% include "notifications.html" with text=message status='success' %}
     {% endfor %}
+  {% else %}
+    {% include "notifications.html" %}
   {% endif %}
-  {% include "notifications.html" %}
 {% endblock notifications %}
