@@ -147,11 +147,11 @@ def create_move(request, pk):
         if playfield.is_game_over():
             winner = playfield.get_winner()
             strict_redis.publish('%d' % request.user.pk,
-                                 ['game_over', get_result(player, winner)[0]])
+                                 ['game_over', get_result(player, winner)])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['opponent_moved', player, move])
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['game_over', get_result(opponent, winner)[0]])
+                                 ['game_over', get_result(opponent, winner)])
         else:
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['opponent_moved', player, move])

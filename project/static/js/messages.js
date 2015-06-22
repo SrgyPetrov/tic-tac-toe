@@ -13,15 +13,14 @@ socket.on("game_started", function(obj){
 });
 
 socket.on("game_over", function(obj){
-    SetNotificationMessage(obj[0], "info");
+    SetNotificationMessage(obj[0][0], obj[0][1]);
     $(".gameover").animate({opacity: "show"}, "slow");
 });
 
 socket.on("opponent_moved", function(obj){
-    var data = eval(obj);
-    $('#cell' + data[1]).html(data[0]);
-    $('#cell' + data[1]).removeClass();
-    $('#cell' + data[1]).addClass('checked-' + data[0]);
+    $('#cell' + obj[1]).html(obj[0]);
+    $('#cell' + obj[1]).removeClass();
+    $('#cell' + obj[1]).addClass('checked-' + obj[0]);
     SwapUser();
 });
 
