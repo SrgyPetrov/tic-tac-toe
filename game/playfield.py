@@ -9,8 +9,8 @@ class PlayField(object):
     def all_equal(self, items):
         return not items or items == [items[0]] * len(items)
 
-    def get_opponent(self, player):
-        return 'x' if player == 'o' else 'o'
+    def get_opponent(self, user):
+        return 'x' if user == 'o' else 'o'
 
     def get_winner(self):
         winning_rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -28,8 +28,8 @@ class PlayField(object):
     def is_game_over(self):
         return bool(self.get_winner()) or not self.get_valid_moves()
 
-    def make_move(self, move, player):
-        self.cells[move] = player
+    def make_move(self, move, user):
+        self.cells[move] = user
 
     def undo_move(self, move):
         self.make_move(move, '')
