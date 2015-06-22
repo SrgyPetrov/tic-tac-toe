@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="panel panel-default">
+      <div class="panel-heading text-center">
+        <h3 class="panel-title">{% if object_list %}{% trans "Select the user to play together" %}{% else %}{% trans "No users online" %}{% endif %}</h3>
+      </div>
+
+      {% if object_list %}
+        <div class="list-group text-center">
+          {% for object in object_list %}
+            <a href="javascript:;" class="list-group-item user-invite" data-pk="{{ object.pk }}">{{ object.username }}</a>
+          {% endfor %}
+        </div>
+        <form class="invite-form" action="." method="POST">
+          {% csrf_token %}
+          {{ form.invitee_pk }}
+        </form>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block navbar %}
+  <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
+{% endblock navbar %}
+
+{% block notifications %}
+  {% if messages %}
+    {% for message in messages %}
+      {% include "notifications.html" with text=message status='success' %}
+    {% endfor %}
+  {% endif %}
+  {% include "notifications.html" %}
+{% endblock notifications %}

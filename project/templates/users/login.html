@@ -13,7 +13,7 @@
           <label>{% trans "Password" %}</label>
           {{ form.password|add_class:"form-control" }}
         </div>
-        <input type="hidden" name="next" value="{% url 'user_list' %}">
+        <input type="hidden" name="next" value="{% url 'game_user_list' %}">
         <button type="submit" class="btn btn-default">{% trans "Login" %}</button>
       </form>
     </div>

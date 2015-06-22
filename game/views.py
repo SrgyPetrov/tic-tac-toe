@@ -51,8 +51,7 @@ class LoginRequiredMixin(object):
 
 class UserListView(LoginRequiredMixin, FormMixin, ListView):
 
-    template_name = 'user_list.html'
-    queryset = User.objects.filter(logged_in=True)
+    template_name = 'game/game_user_list.html'
     form_class = InviteForm
 
     def form_valid(self, invitee_pk, user):
@@ -61,9 +60,14 @@ class UserListView(LoginRequiredMixin, FormMixin, ListView):
 
         url = reverse('accept_invite', args=[invite.pk])
         messages.add_message(self.request, messages.SUCCESS, _(u'Invite was successfully sent'))
+        message = 'You have a new game invite from {0} <a href="{1}"> Accept?</a>'.format(
+            user.username, url)
 
         red = redis.StrictRedis(settings.REDIS_HOST)
-        red.publish('%d' % invite.invitee.id, ['new_invite', str(user.username), str(url)])
+        red.publish('%d' % invite.invitee.id, ['new_invite', message])
+
+    def get_queryset(self):
+        return User.objects.filter(logged_in=True).exclude(pk=self.request.user.pk)
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
@@ -91,17 +95,25 @@ class GameDetailView(LoginRequiredMixin, DetailView):
             'playfield': self.playfield,
             'player': self.player,
             'notification_text': notification_text,
-            'status': status
+            'status': status,
+            'current_player': self.get_current_player()
         })
         return context
+
+    def get_current_player(self):
+        moves = self.object.move_set.all().order_by('-id')
+        if not moves:
+            return 'x'
+        else:
+            return 'o' if moves[0].user == self.object.first_user else 'x'
 
     def get_notification(self):
         if self.playfield.is_game_over():
             return self.get_result()
         else:
-            return self.get_current_move()
+            return self.get_current_move_text()
 
-    def get_current_move(self):
+    def get_current_move_text(self):
         if self.player == 'x':
             return 'warning', _(u'Your turn.')
         else:
@@ -124,19 +136,13 @@ def create_move(request, pk):
         move = int(request.POST['move'])
         red = redis.StrictRedis(settings.REDIS_HOST)
 
-        # get player of move
         tic_player = 'x' if game.first_user == request.user else 'o'
 
         Move(game=game, user=request.user, move=move).save()
         playfield = game.get_playfield()
         playfield.make_move(move, tic_player)
 
-        # get opponent
         opponent_user = game.first_user if tic_player == 'o' else game.second_user
-
-        # # get computer
-        # computer_user = _get_computer()
-        # playing_computer = computer_user in [game.player1, game.player2]
 
         winner = playfield.get_winner()
 
@@ -170,9 +176,11 @@ def accept_invite(request, invite_pk):
             game = Game(first_user=request.user, second_user=invite.inviter)
 
         game.save()
+        url = reverse('game_detail', args=[game.pk])
 
         red = redis.StrictRedis(settings.REDIS_HOST)
-        red.publish('%d' % invite.inviter.id, ['game_started', game.id, str(request.user.username)])
+        red.publish('%d' % invite.inviter.id, ['game_started', str(url),
+                    str(request.user.username)])
 
         invite.delete()
 

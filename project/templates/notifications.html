@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="panel panel-{{ status }}">
+<div class="panel {% if not text and not status %}hidden{% else %}panel-{{ status }}{% endif %}" id="notification-panel">
   <div class="panel-heading">
     <h3 class="panel-title">{% if head_text %}{{ head_text }}{% else %}{% trans "Notifications" %}{% endif %}</h3>
   </div>

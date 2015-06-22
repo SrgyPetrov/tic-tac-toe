@@ -52,4 +52,49 @@
 .playfield .checked-o {
   background-color: #61bcc3;
 }
-
+.gameover {
+  height: 330px;
+  width: 330px;
+  position: absolute;
+  top: 0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #3d4250;
+  text-align: center;
+  z-index: 11;
+  padding-top: 40px;
+  left: 0;
+}
+@media (min-width: 450px) {
+  .gameover {
+    width: 410px;
+    height: 410px;
+    padding-top: 80px;
+    left: 13px;
+  }
+}
+.gameover a {
+  background-color: #3d4250;
+  border-radius: 4px;
+  color: #fff;
+  padding: 14px 45px;
+  text-decoration: none;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+}
+.gameover a:hover {
+  background-color: #262934;
+  cursor: pointer;
+}
+.gameover h3 {
+  font-size: 40px;
+  font-weight: 300;
+  margin: 35px;
+}
+@media (min-width: 450px) {
+  .gameover h3 {
+    font-size: 60px;
+    margin: 40px;
+  }
+}

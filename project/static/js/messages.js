@@ -1,11 +1,3 @@
-if ($("#messages").text().trim() == "") {
-    $("#messages").hide();
-}
-
-if ($("#notifications").text().trim() == "") {
-    $("#notifications").hide();
-}
-
 socket = io.connect("/game");
 
 socket.on("message", function(obj){
@@ -13,63 +5,61 @@ socket.on("message", function(obj){
         var data = eval(obj.data);
 
         if (data[0] == "new_invite") {
-            SetNotificationMessage("You have a new game invite from " + data[1] + "<a href='" + data[2] + "'>Accept?</a>");
+            SetNotificationMessage(data[1], "info");
         }
         else if (data[0] == "game_started") {
-            SetNotificationMessage("A new game has started <a href='/games/" + data[1] + "/'>here</a>");
+            SetNotificationMessage("A new game has started <a href='" + data[1] + "'>here</a>", "info");
         }
         else if (data[0] == "game_over") {
             if (data[1] == game_id) {
                 winner = data[2];
                 game_over = true;
 
-                if (data[2] == "") {
-                    SetMessage("Its a tie!");
-                }
-                else {
-                    SetMessage("The winner is: " + data[2]);
+                if (data[2] == player) {
+                    SetNotificationMessage("You won!", "success");
+                } else if (data[2] != player) {
+                    SetNotificationMessage("You lost the game.", "danger");
+                } else {
+                    SetNotificationMessage("Its a tie!", "info");
                 }
             }
             else {
-                SetMessage("A game has finished <a href='/games/" + data[1] + "/'>here</a>");
+                SetNotificationMessage("A game has finished <a href='" + data[1] + "'>here</a>", "info");
             }
+            $('.playfield .gameover').removeClass('hidden');
         }
         else if (data[0] == "opponent_moved") {
             if (data[1] == game_id) {
                 $('#cell' + data[3]).html(data[2]);
+                $('#cell' + data[3]).removeClass();
+                $('#cell' + data[3]).addClass('checked-' + data[2]);
                 SwapUser();
-            }
-            else {
-                SetMessage("Your opponent has played <a href='/games/" + game_id + "/'>here</a>");
             }
         }
     }
 });
 
 function MakeMove(sender, move) {
-    if (player == current_player && game_over == false) {
+    if (player == current_player && game_over == "false") {
         if ($(sender).text().trim() == "") {
             $(sender).html(player);
+            $(sender).removeClass();
+            $(sender).addClass('checked-' + player);
             SwapUser();
-
-            $.post(create_move_url, {'move': move},
-                function(data) {
-                    // successfully made a move
-                }
-            )
+            $.post(create_move_url, {'move': move})
         }
     }
 }
 
 function SwapUser() {
-    var computer = player == "X" ? "O" : "X";
+    var swap = player == "x" ? "o" : "x";
 
     if (current_player == player) {
-        current_player = computer;
-        SetMessage("Your opponents turn!");
+        current_player = swap;
+        SetNotificationMessage("Your opponents turn!", "warning");
     } else {
         current_player = player;
-        SetMessage("Your turn!");
+        SetNotificationMessage("Your turn!", "warning");
     }
 }
 
@@ -77,12 +67,10 @@ if (typeof user_id != 'undefined') {
     socket.send("subscribe:" + user_id);
 }
 
-function SetNotificationMessage(message) {
-    $("#notifications").html("<div>" + message + "</div>");
-    $("#notifications").show();
-}
-
-function SetMessage(message) {
-    $("#messages").html("<div>" + message + "</div>");
-    $("#messages").show();
+function SetNotificationMessage(message, status) {
+    var $panel = $(".notifications-container #notification-panel");
+    $('.panel-body', $panel).html(message);
+    $panel.removeClass();
+    $panel.addClass('panel panel-' + status);
+    $panel.removeClass('hidden');
 }

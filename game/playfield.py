@@ -33,12 +33,3 @@ class PlayField(object):
 
     def undo_move(self, move):
         self.make_move(move, '')
-
-    # def get_random_move(self, moves):
-    #     """ Gets a random valid move from the list, returns None if there is no valid moves """
-    #     possible_moves = self.get_valid_moves(moves_to_check=moves)
-
-    #     if len(possible_moves) != 0:
-    #         return random.choice(possible_moves)
-    #     else:
-    #         return None

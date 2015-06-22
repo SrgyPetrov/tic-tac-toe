@@ -16,5 +16,5 @@ django.setup()
 
 
 if __name__ == '__main__':
-    print 'Starting server at http://127.0.0.1:9000/'
-    SocketIOServer(('', 9000), WSGIHandler(), resource="socket.io").serve_forever()
+    print 'Starting server at http://127.0.0.1:8000/'
+    SocketIOServer(('', 8000), WSGIHandler(), resource="socket.io").serve_forever()

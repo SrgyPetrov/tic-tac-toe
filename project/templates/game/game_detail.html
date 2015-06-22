@@ -6,13 +6,16 @@
       <div id="cell{{ forloop.counter0 }}" onclick="MakeMove(this, '{{ forloop.counter0 }}')" class="checked-{{ cell }}">{{ cell }}</div>
     {% endfor %}
   </div>
+  <div class="gameover">
+    <h3>{% trans "Game over" %}</h3>
+    <a href="{% url 'game_user_list' %}">{% trans "Try again?" %}</a>
+  </div>
 {% endblock content %}
 
 {% block extrajs %}
   <script type="text/javascript">
     var create_move_url = "{% url 'game_create_move' object.pk %}";
     var player = "{{ player }}";
-    var winner = "{{ playfield.get_winner }}";
     var game_over = "{{ playfield.is_game_over|lower }}";
     var game_id = {{ object.pk }};
     var current_player = "x";

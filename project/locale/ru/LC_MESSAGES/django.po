@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-20 15:25+0300\n"
+"POT-Creation-Date: 2015-06-21 23:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: settings.py:74
+#: settings.py:75
 msgid "English"
 msgstr "Английский"
 
-#: settings.py:75
+#: settings.py:76
 msgid "Russian"
 msgstr "Русский"
 
@@ -31,34 +31,48 @@ msgstr "Русский"
 msgid "Tic-Tac-Toe"
 msgstr "Крестики-Нолики"
 
-#: templates/user_list.html:15
+#: templates/game/game_detail.html:23 templates/game/game_user_list.html:30
 msgid "logout"
 msgstr "выход"
 
-#: templates/users/login.html:7
-msgid "Your username and password didn't match. Please try again."
-msgstr "Неверное имя пользователя или пароль. Попробуйте еще раз."
+#: templates/game/game_user_list.html:9
+msgid "Select the user to play together"
+msgstr "Выберите пользователя для совместной игры"
 
-#: templates/users/login.html:20 templates/users/registration.html:11
+#: templates/game/game_user_list.html:9
+msgid "No users online"
+msgstr "Нет пользователей онлайн"
+
+#: templates/notifications.html:4
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: templates/users/login.html:9 templates/users/registration.html:11
+#: templates/users/registration.html:29
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: templates/users/login.html:24 templates/users/registration.html:18
+#: templates/users/login.html:13 templates/users/registration.html:15
+#: templates/users/registration.html:30
 msgid "Password"
 msgstr "Пароль"
 
-#: templates/users/login.html:28
+#: templates/users/login.html:17
 msgid "Login"
 msgstr "Вход"
 
-#: templates/users/login.html:38
+#: templates/users/login.html:25
 msgid "Registration"
 msgstr "Регистрация"
 
-#: templates/users/registration.html:25
+#: templates/users/login.html:31
+msgid "Your username and password didn't match. Please try again."
+msgstr "Неверное имя пользователя или пароль. Попробуйте еще раз."
+
+#: templates/users/registration.html:19 templates/users/registration.html:31
 msgid "Password confirmation"
 msgstr "Подтверждение пароля"
 
-#: templates/users/registration.html:31
+#: templates/users/registration.html:22
 msgid "Sign up"
 msgstr "Зарегистрироваться"
