@@ -34,7 +34,11 @@ function MakeMove(sender, move) {
             $(sender).removeClass();
             $(sender).addClass('checked-' + player);
             SwapUser();
-            $.post(create_move_url, {'move': move})
+            $.post(create_move_url, {'move': move}, function(data) {
+                if (data.length) {
+                    SetNotificationMessage(data, "warning");
+                }
+            });
         }
     }
 }
@@ -43,10 +47,8 @@ function SwapUser() {
     var swap = player == "x" ? "o" : "x";
     if (current_player == player) {
         current_player = swap;
-        // SetNotificationMessage("Your opponents turn!", "warning");
     } else {
         current_player = player;
-        // SetNotificationMessage("Your turn!", "warning");
     }
 }
 

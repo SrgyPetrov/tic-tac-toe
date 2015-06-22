@@ -148,10 +148,12 @@ def create_move(request, pk):
                                  ['opponent_moved', player, move])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['game_over', get_result(opponent, winner)])
+            return HttpResponse()
+
         else:
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['opponent_moved', player, move, ugettext(u"Your turn.")])
-    return HttpResponse()
+    return HttpResponse(ugettext(u"Your opponents turn."))
 
 
 @login_required
