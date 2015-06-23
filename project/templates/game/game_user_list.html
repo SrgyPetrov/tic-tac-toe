@@ -4,23 +4,16 @@
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="user-list">
       <div class="panel-heading text-center">
-        <h3 class="panel-title">{% if object_list %}{% trans "Select the user to play together" %}{% else %}{% trans "No users online" %}{% endif %}</h3>
+        <h3 class="panel-title hidden" id="title-users-exists">{% trans "Select the user to play together" %}</h3>
+        <h3 class="panel-title" id="title-empty">{% trans "No users online" %}</h3>
       </div>
-
-      {% if object_list %}
-        <div class="list-group text-center">
-          {% for object in object_list %}
-            <a href="javascript:;" class="list-group-item user-invite" data-pk="{{ object.pk }}">{{ object.username }}</a>
-          {% endfor %}
-        </div>
-        <form class="invite-form" action="." method="POST">
-          {% csrf_token %}
-          {{ form.invitee_pk }}
-        </form>
-      {% endif %}
-
+      <div class="list-group text-center" id="user-links"></div>
+      <form class="invite-form" action="." method="POST">
+        {% csrf_token %}
+        {{ form.invitee_pk }}
+      </form>
     </div>
   </div>
 </div>

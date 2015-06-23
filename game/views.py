@@ -3,7 +3,7 @@ import redis
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormMixin
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -13,6 +13,7 @@ from django.conf import settings
 
 from gevent.greenlet import Greenlet
 from socketio.namespace import BaseNamespace
+from socketio.mixins import BroadcastMixin
 from socketio.sdjango import namespace
 
 from users.models import User
@@ -26,13 +27,13 @@ strict_redis = redis.StrictRedis(settings.REDIS_HOST)
 
 
 @namespace('/game')
-class GameNamespace(BaseNamespace):
+class GameNamespace(BaseNamespace, BroadcastMixin):
+
+    online_users = {}
 
     def listener(self, channel):
         red = strict_redis.pubsub()
         red.subscribe(channel)
-
-        print 'subscribed on channel ', channel
 
         while True:
             for message in red.listen():
@@ -42,11 +43,17 @@ class GameNamespace(BaseNamespace):
                 else:
                     self.emit('message', message)
 
-    def recv_message(self, message):
-        action, pk = message.split(':')
+    def on_connect(self, user_pk, username):
+        if user_pk not in self.online_users:
+            self.online_users[user_pk] = username
+            self.broadcast_event('change_user_list', self.online_users)
+        Greenlet.spawn(self.listener, user_pk)
+        return True
 
-        if action == 'subscribe':
-            Greenlet.spawn(self.listener, pk)
+    def on_disconnect(self, user_pk):
+        self.online_users.pop(user_pk, None)
+        self.broadcast_event('change_user_list', self.online_users)
+        return True
 
 
 class LoginRequiredMixin(object):
@@ -56,7 +63,7 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class UserListView(LoginRequiredMixin, FormMixin, ListView):
+class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
 
     template_name = 'game/game_user_list.html'
     form_class = InviteForm
@@ -68,9 +75,6 @@ class UserListView(LoginRequiredMixin, FormMixin, ListView):
             u'You have a new game invite from {0} <a href="{1}"> Accept?</a>'
         ).format(self.request.user.username, invite_url)
         strict_redis.publish('%d' % invitee_pk, ['new_invite', redis_message])
-
-    def get_queryset(self):
-        return User.objects.filter(logged_in=True).exclude(pk=self.request.user.pk)
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)

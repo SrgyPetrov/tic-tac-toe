@@ -1,6 +1,3 @@
-# import random
-
-
 class PlayField(object):
 
     def __init__(self):
