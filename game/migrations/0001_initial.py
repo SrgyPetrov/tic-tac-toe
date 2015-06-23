@@ -25,6 +25,15 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='Invite',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('invitee', models.ForeignKey(related_name='invitee', to=settings.AUTH_USER_MODEL)),
+                ('inviter', models.ForeignKey(related_name='inviter', to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Move',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),

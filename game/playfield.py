@@ -24,9 +24,3 @@ class PlayField(object):
 
     def is_game_over(self):
         return bool(self.get_winner()) or not self.get_valid_moves()
-
-    def make_move(self, move, user):
-        self.cells[move] = user
-
-    def undo_move(self, move):
-        self.make_move(move, '')

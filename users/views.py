@@ -2,13 +2,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
-
-from .forms import RegistrationForm
+from django.contrib.auth.forms import UserCreationForm
 
 
 class RegisterFormView(SuccessMessageMixin, FormView):
 
-    form_class = RegistrationForm
+    form_class = UserCreationForm
     template_name = "users/registration.html"
     success_message = _(u"User %(username)s was created successfully")
 

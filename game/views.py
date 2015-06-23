@@ -1,6 +1,7 @@
 import redis
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView
@@ -11,49 +12,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from django.conf import settings
 
-from gevent.greenlet import Greenlet
-from socketio.namespace import BaseNamespace
-from socketio.mixins import BroadcastMixin
-from socketio.sdjango import namespace
-
-from users.models import User
-
 from .models import Game, Move, Invite
 from .forms import InviteForm
 from .utils import get_result, get_game
 
 
 strict_redis = redis.StrictRedis(settings.REDIS_HOST)
-
-
-@namespace('/game')
-class GameNamespace(BaseNamespace, BroadcastMixin):
-
-    online_users = {}
-
-    def listener(self, channel):
-        red = strict_redis.pubsub()
-        red.subscribe(channel)
-
-        while True:
-            for message in red.listen():
-                if isinstance(message['data'], str):
-                    message = eval(message['data'])
-                    self.emit(message[0], message[1:])
-                else:
-                    self.emit('message', message)
-
-    def on_connect(self, user_pk, username):
-        if user_pk not in self.online_users:
-            self.online_users[user_pk] = username
-            self.broadcast_event('change_user_list', self.online_users)
-        Greenlet.spawn(self.listener, user_pk)
-        return True
-
-    def on_disconnect(self, user_pk):
-        self.online_users.pop(user_pk, None)
-        self.broadcast_event('change_user_list', self.online_users)
-        return True
 
 
 class LoginRequiredMixin(object):

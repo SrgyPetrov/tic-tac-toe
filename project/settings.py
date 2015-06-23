@@ -86,8 +86,6 @@ USE_I18N = True
 
 USE_L10N = True
 
-AUTH_USER_MODEL = 'users.User'
-
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'users_login'

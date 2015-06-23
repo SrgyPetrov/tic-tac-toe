@@ -81,7 +81,7 @@ function RedrawUserList(users) {
       }
     }
   }
-  if($links.length) {
+  if($links.children().length) {
     $('#title-empty', $container).addClass("hidden");
     $('#title-users-exists', $container).removeClass("hidden");
   }
