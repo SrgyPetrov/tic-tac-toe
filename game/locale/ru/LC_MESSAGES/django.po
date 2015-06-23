@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 20:44+0300\n"
+"POT-Creation-Date: 2015-06-23 17:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,68 +19,72 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: models.py:11
+#: models.py:10
 msgid "first user"
 msgstr "первый игрок"
 
-#: models.py:13
+#: models.py:12
 msgid "second user"
 msgstr "второй игрок"
 
-#: models.py:17 models.py:44
+#: models.py:16 models.py:43
 msgid "game"
 msgstr "игра"
 
-#: models.py:18
+#: models.py:17
 msgid "games"
 msgstr "игры"
 
-#: models.py:45
+#: models.py:44
 msgid "user"
 msgstr "игрок"
 
-#: models.py:46
+#: models.py:45
 msgid "move"
 msgstr "перемещение"
 
-#: models.py:49
+#: models.py:48
 msgid "game move"
 msgstr "игровое перемещение"
 
-#: models.py:50
+#: models.py:49
 msgid "game moves"
 msgstr "игровые перемещения"
 
-#: utils.py:10
+#: utils.py:6
 msgid "You won!"
 msgstr "Вы победили!"
 
-#: utils.py:12
+#: utils.py:8
 msgid "You lost the game."
 msgstr "Вы проиграли."
 
-#: utils.py:14
+#: utils.py:10
 msgid "Its a tie!"
 msgstr "Ничья!"
 
-#: views.py:67
+#: views.py:30
 msgid "Invite was successfully sent"
 msgstr "Приглашение успешно отправлено"
 
-#: views.py:69
+#: views.py:32
 #, python-brace-format
 msgid "You have a new game invite from {0} <a href=\"{1}\"> Accept?</a>"
 msgstr "Новое приглашение в игру от {0}. <a href=\"{1}\"> Принять?</a>"
 
-#: views.py:128
+#: views.py:86 views.py:116
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:130
+#: views.py:87 views.py:117
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:177
+#: views.py:120
+msgid "Error occured."
+msgstr "Произошла ошибка."
+
+#: views.py:131
 #, python-brace-format
 msgid "A new game has started <a href='{0}'>here.</a>"
 msgstr "Новая игра началась <a href='{0}'>здесь.</a>"

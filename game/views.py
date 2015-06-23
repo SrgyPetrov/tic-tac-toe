@@ -5,26 +5,19 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView
-from django.views.generic.edit import FormMixin
-from django.utils.decorators import method_decorator
+from django.views.generic.edit import FormMixin, BaseCreateView
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse, Http404
 from django.conf import settings
 
-from .models import Game, Move, Invite
-from .forms import InviteForm
-from .utils import get_result, get_game
+from .models import Game, Invite
+from .forms import InviteForm, CreateMoveForm
+from .utils import get_result
+from .mixins import LoginRequiredMixin, RequirePostMixin
 
 
 strict_redis = redis.StrictRedis(settings.REDIS_HOST)
-
-
-class LoginRequiredMixin(object):
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
 class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
@@ -94,34 +87,37 @@ class GameDetailView(LoginRequiredMixin, DetailView):
         return _(u'Your opponents turn.'), 'warning'
 
 
-@login_required
-def create_move(request, pk):
-    game = get_game(request.user, pk)
-    if request.POST:
-        move = int(request.POST['move'])
-        Move.objects.create(game=game, user=request.user, move=move)
+class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
 
+    form_class = CreateMoveForm
+
+    def form_valid(self, form):
+        move = form.save()
+        game = form.cleaned_data['game']
         playfield = game.get_playfield()
 
-        player = 'x' if game.first_user == request.user else 'o'
+        player = 'x' if game.first_user == self.request.user else 'o'
         opponent = playfield.get_opponent(player)
 
         opponent_user = game.first_user if player == 'o' else game.second_user
 
         if playfield.is_game_over():
             winner = playfield.get_winner()
-            strict_redis.publish('%d' % request.user.pk,
+            strict_redis.publish('%d' % self.request.user.pk,
                                  ['game_over', get_result(player, winner)])
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['opponent_moved', player, move])
+                                 ['opponent_moved', player, move.move])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['game_over', get_result(opponent, winner)])
             return HttpResponse()
 
         else:
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['opponent_moved', player, move, ugettext(u"Your turn.")])
-    return HttpResponse(ugettext(u"Your opponents turn."))
+                                 ['opponent_moved', player, move.move, ugettext(u"Your turn.")])
+        return HttpResponse(ugettext(u"Your opponents turn."))
+
+    def form_invalid(self, form):
+        return HttpResponse(ugettext(u"Error occured."))
 
 
 @login_required

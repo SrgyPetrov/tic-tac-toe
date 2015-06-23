@@ -41,7 +41,7 @@ function MakeMove(sender, move) {
       $(sender).html(player);
       $(sender).removeClass().addClass('checked-' + player);
       SwapUser();
-      $.post(create_move_url, {'move': move}, function(data) {
+      $.post(create_move_url, {'move': move, 'game': game_id, 'user': user_id}, function(data) {
         if (data.length) {
           SetNotificationMessage(data, "warning");
         }

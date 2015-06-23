@@ -14,7 +14,7 @@
 
 {% block extrajs %}
   <script type="text/javascript">
-    var create_move_url = "{% url 'game_create_move' object.pk %}";
+    var create_move_url = "{% url 'game_create_move' %}";
     var player = "{{ player }}";
     var game_over = "{{ playfield.is_game_over|lower }}";
     var game_id = {{ object.pk }};
