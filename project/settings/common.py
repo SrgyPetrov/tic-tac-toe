@@ -6,10 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2tay@wc#ci_8l6t!=ond3yx2832pl((gv26g+s1yg%=i7#5v_u'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -40,7 +37,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'project/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -57,8 +54,10 @@ TEMPLATES = [
 
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'project/static'),
+    os.path.join(BASE_DIR, 'static'),
 )
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -77,7 +76,7 @@ LANGUAGES = (
 )
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'project/locale'),
+    os.path.join(BASE_DIR, 'locale'),
 )
 
 TIME_ZONE = 'Europe/Moscow'
