@@ -10,7 +10,7 @@ from django.core.handlers.wsgi import WSGIHandler
 from socketio.server import SocketIOServer
 
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings.development'
 
 django.setup()
 
