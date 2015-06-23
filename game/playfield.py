@@ -6,8 +6,8 @@ class PlayField(object):
     def all_equal(self, items):
         return not items or items == [items[0]] * len(items)
 
-    def get_opponent(self, user):
-        return 'x' if user == 'o' else 'o'
+    def get_opponent(self, player):
+        return 'x' if player == 'o' else 'o'
 
     def get_winner(self):
         winning_rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8],
