@@ -8,3 +8,5 @@ Jinja2==2.7.3
 ecdsa==0.11
 paramiko==1.15.2
 pycrypto==2.6.1
+
+-e git+git@gitlab.com:exlan/deploy.git@0.6#egg=deploy
