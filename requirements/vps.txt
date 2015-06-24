@@ -1,0 +1,3 @@
+--requirement=common.txt
+
+gunicorn==17.5
