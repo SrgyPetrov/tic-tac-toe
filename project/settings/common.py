@@ -81,5 +81,3 @@ USE_L10N = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'users_login'
-
-REDIS_HOST = 'localhost'
