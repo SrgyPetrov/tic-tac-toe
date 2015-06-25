@@ -93,9 +93,11 @@ function RedrawUserList(users) {
 
 $('#user-list').on('click', '.user-invite', function () {
   var $pk = $(this).data('pk');
-  var $form = $('.invite-form');
-  $("input[name='invitee_pk']", $form).val($pk)
-  $form.submit();
+  $.post(window.location, {'invitee_pk': $pk}, function(data) {
+    if (data.length) {
+      SetNotificationMessage(data, "success");
+    }
+  });
 });
 
 $('#notification-panel').on('click', '#decline', function (e) {

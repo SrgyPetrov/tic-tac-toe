@@ -2,7 +2,6 @@ import redis
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormMixin, BaseCreateView
@@ -27,7 +26,6 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
 
     def form_valid(self, invitee_pk):
         accept_invite_url, decline_invite_url = self.create_invite(invitee_pk)
-        messages.add_message(self.request, messages.SUCCESS, _(u'Invite was successfully sent'))
         redis_message = ugettext(
             u"""You have a new game invite from {0}
             <a href="{1}" class="btn btn-success invite_link"> Accept</a>
@@ -43,9 +41,9 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if not form.is_valid():
-            return self.form_invalid(form)
+            return HttpResponse(ugettext(u"Error occured."))
         self.form_valid(form.cleaned_data['invitee_pk'])
-        return super(UserListView, self).get(request, *args, **kwargs)
+        return HttpResponse(ugettext(u'Invite was successfully sent.'))
 
     def create_invite(self, invitee_pk):
         invitee = get_object_or_404(User, pk=invitee_pk)
