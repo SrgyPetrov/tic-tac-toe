@@ -6,8 +6,8 @@
     </div>
     <div class="panel-body">
       {% blocktrans with inviter=object.inviter %}You have a new game invite from {{ inviter }}{% endblocktrans %}
-      <a href="{% url 'accept_invite' object.pk %}" class="btn btn-success invite_link"> {% trans "Accept" %}</a>
-      <a href="{% url 'decline_invite' object.pk %}" class="btn btn-danger invite_link" id="decline"> {% trans "Decline" %}</a>
+      <a href="{% url 'accept_invite' object.pk %}" class="btn btn-success invite-link"> {% trans "Accept" %}</a>
+      <a href="{% url 'decline_invite' object.pk %}" class="btn btn-danger invite-link" id="decline"> {% trans "Decline" %}</a>
     </div>
   </div>
 {% endfor %}

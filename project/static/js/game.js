@@ -30,6 +30,13 @@ socket.on("game_over", function(obj){
   $(".gameover").animate({opacity: "show"}, "slow");
 });
 
+socket.on("replay", function(obj){
+  ClearPlayfield();
+  current_player = obj[2];
+  SetNotificationMessage(obj[1], 'warning');
+  SetNotificationMessage(obj[0], 'info', true);
+});
+
 socket.on("opponent_moved", function(obj){
   $('#cell' + obj[1]).html(obj[0]);
   $('#cell' + obj[1]).removeClass().addClass('checked-' + obj[0]);
@@ -40,7 +47,8 @@ socket.on("opponent_moved", function(obj){
 });
 
 function MakeMove(sender, move) {
-  if (player == current_player && game_over == "false") {
+  if (player == current_player) {
+    RemoveReplayNotification();
     if ($(sender).text().trim() == "") {
       $(sender).html(player);
       $(sender).removeClass().addClass('checked-' + player);
@@ -60,6 +68,13 @@ function SwapUser() {
     current_player = swap;
   } else {
     current_player = player;
+  }
+}
+
+function RemoveReplayNotification() {
+  var $link = $('.refuse-link');
+  if ($link.length) {
+    $link.closest('.panel').remove();
   }
 }
 
@@ -99,6 +114,14 @@ function RedrawUserList(users) {
   }
 }
 
+function ClearPlayfield() {
+  $(".playfield div").each(function(index) {
+    $(this).empty();
+    $(this).removeClass();
+  });
+  $(".gameover").animate({opacity: "hide"}, "slow");
+}
+
 $('#user-list').on('click', '.user-invite', function () {
   var $pk = $(this).data('pk');
   $.post(window.location, {'invitee': $pk, 'inviter': user_id}, function(data) {
@@ -127,3 +150,11 @@ $('.notifications-container').on('click', '#decline', function (e) {
   });
 });
 
+$('.game-container').on('click', '.replay', function (e) {
+  $.post($(this).data('url'), {}, function(data) {
+    if (data.length) {
+      ClearPlayfield();
+      SetNotificationMessage(data, "warning");
+    }
+  });
+});

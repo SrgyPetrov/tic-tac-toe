@@ -11,7 +11,7 @@ from django.conf import settings
 
 from .models import Game, Invite
 from .forms import InviteForm, CreateMoveForm
-from .utils import get_result
+from .utils import get_result, get_players
 from .mixins import LoginRequiredMixin, RequirePostMixin
 
 
@@ -28,9 +28,9 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
         accept_invite_url = reverse('accept_invite', args=[invite.pk])
         decline_invite_url = reverse('decline_invite', args=[invite.pk])
         redis_message = ugettext(
-            u"""You have a new game invite from {0}
-            <a href="{1}" class="btn btn-success invite_link"> Accept</a>
-            <a href="{2}" class="btn btn-danger invite_link" id="decline"> Decline</a>"""
+            u"""You have a new game invite from {0}. <br>
+            <a href="{1}" class="btn btn-success invite-link"> Accept</a>
+            <a href="{2}" class="btn btn-danger invite-link" id="decline"> Decline</a>"""
         ).format(self.request.user.username, accept_invite_url, decline_invite_url)
         strict_redis.publish('%d' % invite.invitee.pk, ['new_invite', redis_message])
 
@@ -51,9 +51,16 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     model = Game
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        if not self.object.is_active:
+            return redirect('game_user_list')
+        return self.render_to_response(context)
+
     def get_context_data(self, **kwargs):
         context = super(GameDetailView, self).get_context_data(**kwargs)
-        self.player = 'x' if self.object.first_user == self.request.user else 'o'
+        self.player = get_players(self.object, self.request.user)[1]
         self.playfield = self.object.get_playfield()
         notification_text, status = self.get_notification()
         context.update({
@@ -92,10 +99,7 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
         game = form.cleaned_data['game']
         playfield = game.get_playfield()
 
-        player = 'x' if game.first_user == self.request.user else 'o'
-        opponent = playfield.get_opponent(player)
-
-        opponent_user = game.first_user if player == 'o' else game.second_user
+        opponent_user, player, opponent = get_players(game, self.request.user)
 
         if playfield.is_game_over():
             winner = playfield.get_winner()
@@ -105,6 +109,8 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
                                  ['opponent_moved', player, move.move])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['game_over', get_result(opponent, winner)])
+            game.is_active = False
+            game.save()
             return HttpResponse()
 
         else:
@@ -146,3 +152,24 @@ def decline_invite(request, invite_pk):
 
         return HttpResponse(ugettext(u"Invitation declined."))
     raise Http404
+
+
+@login_required
+def replay(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+
+    if not request.user == game.first_user and not request.user == game.second_user:
+        raise Http404
+
+    game.is_active = True
+    game.save()
+    game.move_set.all().delete()
+
+    opponent_user, player, opponent = get_players(game, request.user)
+
+    redis_message = ugettext(
+        u"{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> Refuse</a>"
+    ).format(request.user, 'url')
+    strict_redis.publish('%d' % opponent_user.pk, ['replay', redis_message,
+                         ugettext(u"Your turn."), opponent])
+    return HttpResponse(ugettext(u"Your opponents turn."))

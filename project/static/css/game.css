@@ -1,8 +1,13 @@
 .active-link {
     pointer-events: none;
 }
-.invite_link {
+.invite-link {
   margin: 10px 5px 0 0;
+}
+.refuse-link {
+  display: block;
+  margin: 10px 0 0;
+  width: 100px;
 }
 .game-container {
   width: 438px;

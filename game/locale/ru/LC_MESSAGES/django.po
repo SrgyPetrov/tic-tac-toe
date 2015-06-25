@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 18:18+0300\n"
+"POT-Creation-Date: 2015-06-26 00:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,27 +31,31 @@ msgstr "первый игрок"
 msgid "second user"
 msgstr "второй игрок"
 
-#: models.py:16 models.py:45
+#: models.py:14
+msgid "is active"
+msgstr "активна"
+
+#: models.py:17 models.py:46
 msgid "game"
 msgstr "игра"
 
-#: models.py:17
+#: models.py:18
 msgid "games"
 msgstr "игры"
 
-#: models.py:46
+#: models.py:47
 msgid "user"
 msgstr "игрок"
 
-#: models.py:47
+#: models.py:48
 msgid "move"
 msgstr "перемещение"
 
-#: models.py:50
+#: models.py:51
 msgid "game move"
 msgstr "игровое перемещение"
 
-#: models.py:51
+#: models.py:52
 msgid "game moves"
 msgstr "игровые перемещения"
 
@@ -70,44 +74,53 @@ msgstr "Ничья!"
 #: views.py:31
 #, python-brace-format
 msgid ""
-"You have a new game invite from {0}\n"
-"            <a href=\"{1}\" class=\"btn btn-success invite_link\"> Accept</"
+"You have a new game invite from {0}. <br>\n"
+"            <a href=\"{1}\" class=\"btn btn-success invite-link\"> Accept</"
 "a>\n"
-"            <a href=\"{2}\" class=\"btn btn-danger invite_link\" id=\"decline"
+"            <a href=\"{2}\" class=\"btn btn-danger invite-link\" id=\"decline"
 "\"> Decline</a>"
 msgstr ""
-"Новое приглашение в игру от {0}.\n"
-"            <a href=\"{1}\" class=\"btn btn-success invite_link\"> Принять</"
+"Новое приглашение в игру от {0}. <br>\n"
+"            <a href=\"{1}\" class=\"btn btn-success invite-link\"> Принять</"
 "a>\n"
-"            <a href=\"{2}\" class=\"btn btn-danger invite_link\" id=\"decline"
+"            <a href=\"{2}\" class=\"btn btn-danger invite-link\" id=\"decline"
 "\"> Отклонить</a>"
 
-#: views.py:46 views.py:117
-msgid "Error occured."
-msgstr "Произошла ошибка."
-
-#: views.py:48
+#: views.py:47
 msgid "Invite was successfully sent."
 msgstr "Приглашение успешно отправлено."
 
-#: views.py:83 views.py:113
+#: views.py:89 views.py:118 views.py:174
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:84 views.py:114
+#: views.py:90 views.py:119 views.py:175
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:128
+#: views.py:122
+msgid "Error occured."
+msgstr "Произошла ошибка."
+
+#: views.py:133
 #, python-brace-format
 msgid "A new game with {0} has started <a href='{1}'>here.</a>"
 msgstr "Новая игра с {0} началась <a href='{1}'>здесь.</a>"
 
-#: views.py:143
+#: views.py:148
 #, python-brace-format
 msgid "{0} has declined your invitation."
 msgstr "{0} отклонил ваше приглашение."
 
-#: views.py:148
+#: views.py:153
 msgid "Invitation declined."
 msgstr "Приглашение отклонено."
+
+#: views.py:171
+#, python-brace-format
+msgid ""
+"{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> "
+"Refuse</a>"
+msgstr ""
+"{0} начал игру заново. <a href='{1}' class='btn btn-danger refuse-link'> "
+"Отказаться</a>"

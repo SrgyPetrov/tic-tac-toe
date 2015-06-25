@@ -11,6 +11,7 @@ class Game(models.Model):
                                    related_name='first_user_games')
     second_user = models.ForeignKey(User, blank=True, null=True, verbose_name=_(u'second user'),
                                     related_name='second_user_games')
+    is_active = models.BooleanField(_(u'is active'), default=True)
 
     class Meta:
         verbose_name = _(u'game')
