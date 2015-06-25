@@ -93,7 +93,7 @@ function RedrawUserList(users) {
 
 $('#user-list').on('click', '.user-invite', function () {
   var $pk = $(this).data('pk');
-  $.post(window.location, {'invitee_pk': $pk}, function(data) {
+  $.post(window.location, {'invitee': $pk, 'inviter': user_id}, function(data) {
     if (data.length) {
       SetNotificationMessage(data, "success");
     }

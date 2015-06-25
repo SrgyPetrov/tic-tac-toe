@@ -1,7 +1,6 @@
 import redis
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormMixin, BaseCreateView
@@ -24,14 +23,16 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
     template_name = 'game/game_user_list.html'
     form_class = InviteForm
 
-    def form_valid(self, invitee_pk):
-        accept_invite_url, decline_invite_url = self.create_invite(invitee_pk)
+    def form_valid(self, form):
+        invite = form.save()
+        accept_invite_url = reverse('accept_invite', args=[invite.pk])
+        decline_invite_url = reverse('decline_invite', args=[invite.pk])
         redis_message = ugettext(
             u"""You have a new game invite from {0}
             <a href="{1}" class="btn btn-success invite_link"> Accept</a>
             <a href="{2}" class="btn btn-danger invite_link" id="decline"> Decline</a>"""
         ).format(self.request.user.username, accept_invite_url, decline_invite_url)
-        strict_redis.publish('%d' % invitee_pk, ['new_invite', redis_message])
+        strict_redis.publish('%d' % invite.invitee.pk, ['new_invite', redis_message])
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
@@ -42,14 +43,8 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
         form = self.get_form()
         if not form.is_valid():
             return HttpResponse(ugettext(u"Error occured."))
-        self.form_valid(form.cleaned_data['invitee_pk'])
+        self.form_valid(form)
         return HttpResponse(ugettext(u'Invite was successfully sent.'))
-
-    def create_invite(self, invitee_pk):
-        invitee = get_object_or_404(User, pk=invitee_pk)
-        invite = Invite.objects.create(inviter=self.request.user, invitee=invitee)
-        return (reverse('accept_invite', args=[invite.pk]),
-                reverse('decline_invite', args=[invite.pk]))
 
 
 class GameDetailView(LoginRequiredMixin, DetailView):

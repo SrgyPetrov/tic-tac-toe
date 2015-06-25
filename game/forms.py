@@ -1,11 +1,13 @@
 from django import forms
 
-from .models import Move
+from .models import Move, Invite
 
 
-class InviteForm(forms.Form):
+class InviteForm(forms.ModelForm):
 
-    invitee_pk = forms.IntegerField(widget=forms.widgets.HiddenInput())
+    class Meta:
+        model = Invite
+        fields = ['invitee', 'inviter']
 
 
 class CreateMoveForm(forms.ModelForm):
