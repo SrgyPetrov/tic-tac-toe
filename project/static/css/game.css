@@ -1,6 +1,9 @@
 .active-link {
     pointer-events: none;
 }
+.invite_link {
+  margin: 10px 5px 0 0;
+}
 .game-container {
   width: 438px;
 }

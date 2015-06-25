@@ -17,6 +17,10 @@ socket.on("new_invite", function(obj){
   SetNotificationMessage(obj[0], "info");
 });
 
+socket.on("invitation_declined", function(obj){
+  SetNotificationMessage(obj[0], "danger");
+});
+
 socket.on("game_started", function(obj){
   SetNotificationMessage(obj[0], "info");
 });
@@ -93,3 +97,14 @@ $('#user-list').on('click', '.user-invite', function () {
   $("input[name='invitee_pk']", $form).val($pk)
   $form.submit();
 });
+
+$('#notification-panel').on('click', '#decline', function (e) {
+  e.preventDefault();
+  var $url = $(this).attr('href');
+  $.post($url, {}, function(data) {
+    if (data.length) {
+      SetNotificationMessage(data, "success");
+    }
+  });
+});
+

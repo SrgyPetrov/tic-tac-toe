@@ -26,11 +26,13 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
     form_class = InviteForm
 
     def form_valid(self, invitee_pk):
-        invite_url = self.create_invite(invitee_pk)
+        accept_invite_url, decline_invite_url = self.create_invite(invitee_pk)
         messages.add_message(self.request, messages.SUCCESS, _(u'Invite was successfully sent'))
         redis_message = ugettext(
-            u'You have a new game invite from {0} <a href="{1}"> Accept?</a>'
-        ).format(self.request.user.username, invite_url)
+            u"""You have a new game invite from {0}
+            <a href="{1}" class="btn btn-success invite_link"> Accept</a>
+            <a href="{2}" class="btn btn-danger invite_link" id="decline"> Decline</a>"""
+        ).format(self.request.user.username, accept_invite_url, decline_invite_url)
         strict_redis.publish('%d' % invitee_pk, ['new_invite', redis_message])
 
     def get_context_data(self, **kwargs):
@@ -48,7 +50,8 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
     def create_invite(self, invitee_pk):
         invitee = get_object_or_404(User, pk=invitee_pk)
         invite = Invite.objects.create(inviter=self.request.user, invitee=invitee)
-        return reverse('accept_invite', args=[invite.pk])
+        return (reverse('accept_invite', args=[invite.pk]),
+                reverse('decline_invite', args=[invite.pk]))
 
 
 class GameDetailView(LoginRequiredMixin, DetailView):
@@ -130,11 +133,23 @@ def accept_invite(request, invite_pk):
         redis_message = ugettext(
             u"A new game has started <a href='{0}'>here.</a>"
         ).format(reverse('game_detail', args=[game.pk]))
-
         strict_redis.publish('%d' % invite.inviter.pk, ['game_started', redis_message])
 
         invite.delete()
 
         return redirect('game_detail', pk=game.pk)
+    raise Http404
 
+
+@login_required
+def decline_invite(request, invite_pk):
+    invite = get_object_or_404(Invite, pk=invite_pk, is_active=True)
+
+    if request.user == invite.invitee:
+        redis_message = ugettext(u"{0} has declined your invitation.").format(invite.invitee)
+        strict_redis.publish('%d' % invite.inviter.pk, ['invitation_declined', redis_message])
+
+        invite.delete()
+
+        return HttpResponse(ugettext(u"Invitation declined."))
     raise Http404
