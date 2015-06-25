@@ -36,6 +36,9 @@ class Invite(models.Model):
     inviter = models.ForeignKey(User, related_name='inviter')
     invitee = models.ForeignKey(User, related_name='invitee')
 
+    class Meta:
+        unique_together = ("inviter", "invitee")
+
 
 class Move(models.Model):
 

@@ -103,7 +103,14 @@ $('#user-list').on('click', '.user-invite', function () {
   var $pk = $(this).data('pk');
   $.post(window.location, {'invitee': $pk, 'inviter': user_id}, function(data) {
     if (data.length) {
-      SetNotificationMessage(data, "success");
+      try {
+        var json_data = JSON.parse(data);
+        $.each(json_data, function(i, error) {
+          SetNotificationMessage(error[0].message, "danger", true);
+        })
+      } catch(e) {
+         SetNotificationMessage(data, "success", true);
+      }
     }
   });
 });

@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormMixin, BaseCreateView
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.conf import settings
 
 from .models import Game, Invite
@@ -42,7 +42,7 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if not form.is_valid():
-            return HttpResponse(ugettext(u"Error occured."))
+            return JsonResponse(form.errors.as_json(), safe=False)
         self.form_valid(form)
         return HttpResponse(ugettext(u'Invite was successfully sent.'))
 
