@@ -35,7 +35,6 @@ class Invite(models.Model):
 
     inviter = models.ForeignKey(User, related_name='inviter')
     invitee = models.ForeignKey(User, related_name='invitee')
-    is_active = models.BooleanField(default=True)
 
 
 class Move(models.Model):

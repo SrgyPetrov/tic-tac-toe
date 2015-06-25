@@ -118,7 +118,7 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
 
 @login_required
 def accept_invite(request, invite_pk):
-    invite = get_object_or_404(Invite, pk=invite_pk, is_active=True)
+    invite = get_object_or_404(Invite, pk=invite_pk)
 
     if request.user == invite.invitee:
         game = Game.objects.create(first_user=invite.inviter, second_user=request.user)
@@ -136,7 +136,7 @@ def accept_invite(request, invite_pk):
 
 @login_required
 def decline_invite(request, invite_pk):
-    invite = get_object_or_404(Invite, pk=invite_pk, is_active=True)
+    invite = get_object_or_404(Invite, pk=invite_pk)
 
     if request.user == invite.invitee:
         redis_message = ugettext(u"{0} has declined your invitation.").format(invite.invitee)
