@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 17:59+0300\n"
+"POT-Creation-Date: 2015-06-25 16:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: settings.py:75
+#: settings/common.py:67
 msgid "English"
 msgstr "Английский"
 
-#: settings.py:76
+#: settings/common.py:68
 msgid "Russian"
 msgstr "Русский"
 
@@ -39,7 +39,7 @@ msgstr "Игра закончена"
 msgid "Try again?"
 msgstr "Попробуйте еще раз?"
 
-#: templates/game/game_detail.html:26 templates/game/game_user_list.html:30
+#: templates/game/game_detail.html:26 templates/game/game_user_list.html:19
 msgid "logout"
 msgstr "выход"
 
@@ -47,13 +47,26 @@ msgstr "выход"
 msgid "Select the user to play together"
 msgstr "Выберите пользователя для совместной игры"
 
-#: templates/game/game_user_list.html:9
+#: templates/game/game_user_list.html:10
 msgid "No users online"
 msgstr "Нет пользователей онлайн"
 
-#: templates/notifications.html:4
+#: templates/game/tags/invitations.html:5 templates/notifications.html:4
 msgid "Notifications"
 msgstr "Уведомления"
+
+#: templates/game/tags/invitations.html:8
+#, python-format
+msgid "You have a new game invite from %(inviter)s"
+msgstr "Новое приглашение в игру от %(inviter)s"
+
+#: templates/game/tags/invitations.html:9
+msgid "Accept"
+msgstr "Принять"
+
+#: templates/game/tags/invitations.html:10
+msgid "Decline"
+msgstr "Отклонить"
 
 #: templates/users/login.html:9 templates/users/registration.html:11
 #: templates/users/registration.html:29

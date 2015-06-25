@@ -18,7 +18,3 @@
 {% block navbar %}
   <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
 {% endblock navbar %}
-
-{% block notifications %}
-  {% include "notifications.html" %}
-{% endblock notifications %}

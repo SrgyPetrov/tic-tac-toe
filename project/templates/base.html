@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load i18n users %}
+{% load i18n users game %}
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -36,7 +36,10 @@
           {% block content %}{% endblock content %}
         </div>
         <div class="col-md-3 notifications-container">
-          {% block notifications %}{% endblock notifications %}
+          {% invitations %}
+          {% block notifications %}
+            {% include "notifications.html" %}
+          {% endblock notifications %}
         </div>
       </div>
     </div>

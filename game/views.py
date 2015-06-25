@@ -124,8 +124,8 @@ def accept_invite(request, invite_pk):
         game = Game.objects.create(first_user=invite.inviter, second_user=request.user)
 
         redis_message = ugettext(
-            u"A new game has started <a href='{0}'>here.</a>"
-        ).format(reverse('game_detail', args=[game.pk]))
+            u"A new game with {0} has started <a href='{1}'>here.</a>"
+        ).format(request.user, reverse('game_detail', args=[game.pk]))
         strict_redis.publish('%d' % invite.inviter.pk, ['game_started', redis_message])
 
         invite.delete()

@@ -14,15 +14,15 @@ socket.on("change_user_list", function(obj){
 });
 
 socket.on("new_invite", function(obj){
-  SetNotificationMessage(obj[0], "info");
+  SetNotificationMessage(obj[0], "info", true);
 });
 
 socket.on("invitation_declined", function(obj){
-  SetNotificationMessage(obj[0], "danger");
+  SetNotificationMessage(obj[0], "danger", true);
 });
 
 socket.on("game_started", function(obj){
-  SetNotificationMessage(obj[0], "info");
+  SetNotificationMessage(obj[0], "info", true);
 });
 
 socket.on("game_over", function(obj){
@@ -63,8 +63,16 @@ function SwapUser() {
   }
 }
 
-function SetNotificationMessage(message, status) {
+function SetNotificationMessage(message, status, create) {
+  create = typeof create !== 'undefined' ? create : false;
   var $panel = $(".notifications-container #notification-panel");
+
+  if (create) {
+    var $panel = $panel.clone();
+    $panel.removeAttr('id')
+    $panel.appendTo(".notifications-container");
+  }
+
   $('.panel-body', $panel).html(message);
   $panel.removeClass();
   $panel.addClass('panel panel-' + status);
@@ -100,11 +108,13 @@ $('#user-list').on('click', '.user-invite', function () {
   });
 });
 
-$('#notification-panel').on('click', '#decline', function (e) {
+$('.notifications-container').on('click', '#decline', function (e) {
   e.preventDefault();
-  var $url = $(this).attr('href');
+  var $this = $(this)
+  var $url = $this.attr('href');
   $.post($url, {}, function(data) {
     if (data.length) {
+      $this.closest('.panel').not("#notification-panel").remove();
       SetNotificationMessage(data, "success");
     }
   });

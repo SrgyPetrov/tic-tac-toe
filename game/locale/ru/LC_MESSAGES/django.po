@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 15:46+0300\n"
+"POT-Creation-Date: 2015-06-25 17:27+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "первый игрок"
 msgid "second user"
 msgstr "второй игрок"
 
-#: models.py:16 models.py:43
+#: models.py:16 models.py:42
 msgid "game"
 msgstr "игра"
 
@@ -35,19 +35,19 @@ msgstr "игра"
 msgid "games"
 msgstr "игры"
 
-#: models.py:44
+#: models.py:43
 msgid "user"
 msgstr "игрок"
 
-#: models.py:45
+#: models.py:44
 msgid "move"
 msgstr "перемещение"
 
-#: models.py:48
+#: models.py:47
 msgid "game move"
 msgstr "игровое перемещение"
 
-#: models.py:49
+#: models.py:48
 msgid "game moves"
 msgstr "игровые перемещения"
 
@@ -63,7 +63,7 @@ msgstr "Вы проиграли."
 msgid "Its a tie!"
 msgstr "Ничья!"
 
-#: views.py:30
+#: views.py:31
 #, python-brace-format
 msgid ""
 "You have a new game invite from {0}\n"
@@ -78,32 +78,32 @@ msgstr ""
 "            <a href=\"{2}\" class=\"btn btn-danger invite_link\" id=\"decline"
 "\"> Отклонить</a>"
 
-#: views.py:44 views.py:121
+#: views.py:45 views.py:116
 msgid "Error occured."
 msgstr "Произошла ошибка."
 
-#: views.py:46
+#: views.py:47
 msgid "Invite was successfully sent."
 msgstr "Приглашение успешно отправлено."
 
-#: views.py:87 views.py:117
+#: views.py:82 views.py:112
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:88 views.py:118
+#: views.py:83 views.py:113
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:132
+#: views.py:127
 #, python-brace-format
-msgid "A new game has started <a href='{0}'>here.</a>"
-msgstr "Новая игра началась <a href='{0}'>здесь.</a>"
+msgid "A new game with {0} has started <a href='{1}'>here.</a>"
+msgstr "Новая игра с {0} началась <a href='{1}'>здесь.</a>"
 
-#: views.py:147
+#: views.py:142
 #, python-brace-format
 msgid "{0} has declined your invitation."
 msgstr "{0} отклонил ваше приглашение."
 
-#: views.py:152
+#: views.py:147
 msgid "Invitation declined."
 msgstr "Приглашение отклонено."
