@@ -17,7 +17,7 @@ socket.on("new_invite", function(obj){
   message = gettext("You have a new game invite from %s. <br> \
                      <a href='%s' class='btn btn-success invite-link'> Accept</a> \
                      <a href='%s' class='btn btn-danger invite-link' id='decline'> Decline</a>");
-  fmessage = interpolate(message, [obj[0], obj[1], obj[2]]);
+  fmessage = interpolate(message, [obj[0], "/" + lang + obj[1], "/" + lang + obj[2]]);
   SetNotificationMessage(fmessage, "info", true);
 });
 
@@ -29,7 +29,7 @@ socket.on("invitation_declined", function(obj){
 
 socket.on("game_started", function(obj){
   message = gettext("A new game with %s has started <a href='%s'>here.</a>");
-  fmessage = interpolate(message, [obj[0], obj[1]]);
+  fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
   SetNotificationMessage(fmessage, "info", true);
 });
 
@@ -51,7 +51,7 @@ socket.on("refuse", function(obj){
 
 socket.on("replay", function(obj){
   message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
-  fmessage = interpolate(message, [obj[0], obj[1]]);
+  fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
   ClearPlayfield();
   current_player = obj[2];
   SetNotificationMessage(gettext("Your turn."), 'warning');

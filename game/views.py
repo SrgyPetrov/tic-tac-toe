@@ -1,7 +1,6 @@
 import redis
 
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormMixin, BaseCreateView
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -11,7 +10,7 @@ from django.conf import settings
 
 from .models import Game, Invite
 from .forms import InviteForm, CreateMoveForm
-from .utils import get_result, get_players, change_game_status
+from .utils import get_result, get_players, change_game_status, reverse_no_i18n
 from .mixins import LoginRequiredMixin, RequirePostMixin
 
 
@@ -25,8 +24,8 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
 
     def form_valid(self, form):
         invite = form.save()
-        accept_invite_url = reverse('accept_invite', args=[invite.pk])
-        decline_invite_url = reverse('decline_invite', args=[invite.pk])
+        accept_invite_url = reverse_no_i18n('accept_invite', args=[invite.pk])
+        decline_invite_url = reverse_no_i18n('decline_invite', args=[invite.pk])
         strict_redis.publish('%d' % invite.invitee.pk, ['new_invite', self.request.user.username,
                              accept_invite_url, decline_invite_url])
 
@@ -126,7 +125,7 @@ def accept_invite(request, invite_pk):
         game = Game.objects.create(first_user=invite.inviter, second_user=request.user)
 
         strict_redis.publish('%d' % invite.inviter.pk, ['game_started', request.user.username,
-                             reverse('game_detail', args=[game.pk])])
+                             reverse_no_i18n('game_detail', args=[game.pk])])
         invite.delete()
 
         return redirect('game_detail', pk=game.pk)
@@ -152,7 +151,7 @@ def replay_game(request, pk):
     opponent = change_game_status(game, request.user)[1]
     opponent_user = game.get_opponent_user(request.user)
     strict_redis.publish('%d' % opponent_user.pk, ['replay', request.user.username,
-                         reverse('game_refuse', args=[pk]), opponent])
+                         reverse_no_i18n('game_refuse', args=[pk]), opponent])
     return HttpResponse(ugettext(u"Your opponents turn."))
 
 

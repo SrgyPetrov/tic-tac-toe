@@ -23,7 +23,7 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/">{% trans "Tic-Tac-Toe" %}</a>
+          <a class="navbar-brand" href="/{{ LANGUAGE_CODE }}/">{% trans "Tic-Tac-Toe" %}</a>
         </div>
         {% switch_language_panel %}
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -52,6 +52,7 @@
       <script type="text/javascript">
         var user_id = {{ user.pk }};
         var username = "{{ user.username }}";
+        var lang = "{{ LANGUAGE_CODE }}";
       </script>
     {% endif %}
     <script src="{% url 'django.views.i18n.javascript_catalog' %}?language={{ LANGUAGE_CODE }}" type="text/javascript"></script>

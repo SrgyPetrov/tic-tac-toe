@@ -1,3 +1,6 @@
+import re
+
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext
 from django.http import Http404
 
@@ -31,3 +34,8 @@ def change_game_status(game, user):
         game.move_set.all().delete()
 
     return get_players(game, user)
+
+
+def reverse_no_i18n(viewname, *args, **kwargs):
+    url = reverse(viewname, *args, **kwargs)
+    return re.sub(r'^/[^/]*', '', url)
