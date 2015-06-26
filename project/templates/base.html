@@ -38,7 +38,9 @@
         </div>
         <div class="col-md-3 notifications-container">
           {% block notifications %}{% endblock notifications %}
-          {% invitations %}
+          {% if user.is_authenticated %}
+            {% invitations %}
+          {% endif %}
         </div>
       </div>
     </div>
