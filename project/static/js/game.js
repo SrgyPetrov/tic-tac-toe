@@ -14,24 +14,35 @@ socket.on("change_user_list", function(obj){
 });
 
 socket.on("new_invite", function(obj){
-  SetNotificationMessage(obj[0], "info", true);
+  message = gettext("You have a new game invite from %s. <br> \
+                     <a href='%s' class='btn btn-success invite-link'> Accept</a> \
+                     <a href='%s' class='btn btn-danger invite-link' id='decline'> Decline</a>");
+  fmessage = interpolate(message, [obj[0], obj[1], obj[2]]);
+  SetNotificationMessage(fmessage, "info", true);
 });
 
 socket.on("invitation_declined", function(obj){
-  SetNotificationMessage(obj[0], "danger", true);
+  message = gettext("%s has declined your invitation.");
+  fmessage = interpolate(message, [obj[0]]);
+  SetNotificationMessage(fmessage, "danger", true);
 });
 
 socket.on("game_started", function(obj){
-  SetNotificationMessage(obj[0], "info", true);
+  message = gettext("A new game with %s has started <a href='%s'>here.</a>");
+  fmessage = interpolate(message, [obj[0], obj[1]]);
+  SetNotificationMessage(fmessage, "info", true);
 });
 
 socket.on("game_over", function(obj){
-  SetNotificationMessage(obj[0][0], obj[0][1]);
+  message = GetGamoverText(obj[0], obj[1]);
+  SetNotificationMessage(message[0], message[1]);
   $(".gameover").animate({opacity: "show"}, "slow");
 });
 
 socket.on("refuse", function(obj){
-  SetNotificationMessage(obj[0], "danger");
+  message = gettext("%s has refused game.");
+  fmessage = interpolate(message, [obj[0]]);
+  SetNotificationMessage(fmessage, "danger");
   $(".gameover .replay").addClass('hidden');
   $(".gameover .game-refused").removeClass('hidden');
   $(".gameover").animate({opacity: "show"}, "slow");
@@ -39,17 +50,19 @@ socket.on("refuse", function(obj){
 });
 
 socket.on("replay", function(obj){
+  message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
+  fmessage = interpolate(message, [obj[0], obj[1]]);
   ClearPlayfield();
   current_player = obj[2];
-  SetNotificationMessage(obj[1], 'warning');
-  SetNotificationMessage(obj[0], 'info', true);
+  SetNotificationMessage(gettext("Your turn."), 'warning');
+  SetNotificationMessage(fmessage, 'info', true);
 });
 
 socket.on("opponent_moved", function(obj){
   $('#cell' + obj[1]).html(obj[0]);
   $('#cell' + obj[1]).removeClass().addClass('checked-' + obj[0]);
-  if (typeof obj[2] != 'undefined') {
-    SetNotificationMessage(obj[2], "warning");
+  if (typeof obj[2] == 'undefined') {
+    SetNotificationMessage(gettext("Your turn."), "warning");
   }
   SwapUser();
 });
@@ -128,6 +141,16 @@ function ClearPlayfield() {
     $(this).removeClass();
   });
   $(".gameover").animate({opacity: "hide"}, "slow");
+}
+
+function GetGamoverText(player, winner) {
+  if (winner && winner == player) {
+    return [gettext("You won!"), 'success'];
+  } else if (winner && winner != player) {
+    return [gettext("You lost the game."), 'danger'];
+  } else {
+    return [gettext("Its a tie!"), 'info'];
+  }
 }
 
 $('#user-list').on('click', '.user-invite', function () {

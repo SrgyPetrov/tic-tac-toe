@@ -27,12 +27,8 @@ class UserListView(LoginRequiredMixin, FormMixin, TemplateView):
         invite = form.save()
         accept_invite_url = reverse('accept_invite', args=[invite.pk])
         decline_invite_url = reverse('decline_invite', args=[invite.pk])
-        redis_message = ugettext(
-            u"""You have a new game invite from {0}. <br>
-            <a href="{1}" class="btn btn-success invite-link"> Accept</a>
-            <a href="{2}" class="btn btn-danger invite-link" id="decline"> Decline</a>"""
-        ).format(self.request.user.username, accept_invite_url, decline_invite_url)
-        strict_redis.publish('%d' % invite.invitee.pk, ['new_invite', redis_message])
+        strict_redis.publish('%d' % invite.invitee.pk, ['new_invite', self.request.user.username,
+                             accept_invite_url, decline_invite_url])
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
@@ -105,17 +101,17 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
         if playfield.is_game_over():
             winner = playfield.get_winner()
             strict_redis.publish('%d' % self.request.user.pk,
-                                 ['game_over', get_result(player, winner)])
+                                 ['game_over', player, winner])
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['opponent_moved', player, move.move])
+                                 ['opponent_moved', player, move.move, 'game_over'])
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['game_over', get_result(opponent, winner)])
+                                 ['game_over', opponent, winner])
             change_game_status(game, self.request.user)
             return HttpResponse()
 
         else:
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['opponent_moved', player, move.move, ugettext(u"Your turn.")])
+                                 ['opponent_moved', player, move.move])
         return HttpResponse(ugettext(u"Your opponents turn."))
 
     def form_invalid(self, form):
@@ -129,11 +125,8 @@ def accept_invite(request, invite_pk):
     if request.user == invite.invitee:
         game = Game.objects.create(first_user=invite.inviter, second_user=request.user)
 
-        redis_message = ugettext(
-            u"A new game with {0} has started <a href='{1}'>here.</a>"
-        ).format(request.user, reverse('game_detail', args=[game.pk]))
-        strict_redis.publish('%d' % invite.inviter.pk, ['game_started', redis_message])
-
+        strict_redis.publish('%d' % invite.inviter.pk, ['game_started', request.user.username,
+                             reverse('game_detail', args=[game.pk])])
         invite.delete()
 
         return redirect('game_detail', pk=game.pk)
@@ -145,9 +138,8 @@ def decline_invite(request, invite_pk):
     invite = get_object_or_404(Invite, pk=invite_pk)
 
     if request.user == invite.invitee:
-        redis_message = ugettext(u"{0} has declined your invitation.").format(invite.invitee)
-        strict_redis.publish('%d' % invite.inviter.pk, ['invitation_declined', redis_message])
-
+        strict_redis.publish('%d' % invite.inviter.pk, ['invitation_declined',
+                             invite.invitee.username])
         invite.delete()
 
         return HttpResponse(ugettext(u"Invitation declined."))
@@ -159,12 +151,8 @@ def replay_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     opponent = change_game_status(game, request.user)[1]
     opponent_user = game.get_opponent_user(request.user)
-
-    redis_message = ugettext(
-        u"{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> Refuse</a>"
-    ).format(request.user, reverse('game_refuse', args=[pk]))
-    strict_redis.publish('%d' % opponent_user.pk, ['replay', redis_message,
-                         ugettext(u"Your turn."), opponent])
+    strict_redis.publish('%d' % opponent_user.pk, ['replay', request.user.username,
+                         reverse('game_refuse', args=[pk]), opponent])
     return HttpResponse(ugettext(u"Your opponents turn."))
 
 
@@ -174,8 +162,7 @@ def refuse_game(request, pk):
     change_game_status(game, request.user)
     opponent_user = game.get_opponent_user(request.user)
 
-    redis_message = ugettext(u"{0} has refused game.").format(request.user)
-    strict_redis.publish('%d' % opponent_user.pk, ['refuse', redis_message, pk])
+    strict_redis.publish('%d' % opponent_user.pk, ['refuse', request.user.username, pk])
 
     if request.method == 'POST':
         return HttpResponse(ugettext(u"Game finished."))

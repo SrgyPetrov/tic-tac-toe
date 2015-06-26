@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load i18n users game %}
-<html lang="en">
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -53,6 +54,7 @@
         var username = "{{ user.username }}";
       </script>
     {% endif %}
+    <script src="{% url 'django.views.i18n.javascript_catalog' %}?language={{ LANGUAGE_CODE }}" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/game.js" type="text/javascript"></script>
     {% block extrajs %}{% endblock extrajs %}
   </body>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 13:30+0300\n"
+"POT-Creation-Date: 2015-06-26 16:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,65 +71,26 @@ msgstr "Вы проиграли."
 msgid "Its a tie!"
 msgstr "Ничья!"
 
-#: views.py:31
-#, python-brace-format
-msgid ""
-"You have a new game invite from {0}. <br>\n"
-"            <a href=\"{1}\" class=\"btn btn-success invite-link\"> Accept</"
-"a>\n"
-"            <a href=\"{2}\" class=\"btn btn-danger invite-link\" id=\"decline"
-"\"> Decline</a>"
-msgstr ""
-"Новое приглашение в игру от {0}. <br>\n"
-"            <a href=\"{1}\" class=\"btn btn-success invite-link\"> Принять</"
-"a>\n"
-"            <a href=\"{2}\" class=\"btn btn-danger invite-link\" id=\"decline"
-"\"> Отклонить</a>"
-
-#: views.py:47
+#: views.py:43
 msgid "Invite was successfully sent."
 msgstr "Приглашение успешно отправлено."
 
-#: views.py:89 views.py:118 views.py:167
+#: views.py:85
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:90 views.py:119 views.py:168
+#: views.py:86 views.py:115 views.py:156
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:122
+#: views.py:118
 msgid "Error occured."
 msgstr "Произошла ошибка."
 
-#: views.py:133
-#, python-brace-format
-msgid "A new game with {0} has started <a href='{1}'>here.</a>"
-msgstr "Новая игра с {0} началась <a href='{1}'>здесь.</a>"
-
-#: views.py:148
-#, python-brace-format
-msgid "{0} has declined your invitation."
-msgstr "{0} отклонил ваше приглашение."
-
-#: views.py:153
+#: views.py:145
 msgid "Invitation declined."
 msgstr "Приглашение отклонено."
 
-#: views.py:164
-#, python-brace-format
-msgid ""
-"{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> "
-"Refuse</a>"
-msgstr ""
-"{0} начал игру заново. <a href='{1}' class='btn btn-danger refuse-link'> "
-"Отказаться</a>"
-
-#: views.py:177
-#, python-brace-format
-msgid "{0} has refused game."
-msgstr "{0} отказался от игры."
-
-#: views.py:181
+#: views.py:168
 msgid "Game finished."
 msgstr "Игра закончена."
