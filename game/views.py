@@ -11,7 +11,7 @@ from django.conf import settings
 
 from .models import Game, Invite
 from .forms import InviteForm, CreateMoveForm
-from .utils import get_result, get_players
+from .utils import get_result, get_players, change_game_status
 from .mixins import LoginRequiredMixin, RequirePostMixin
 
 
@@ -60,7 +60,7 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(GameDetailView, self).get_context_data(**kwargs)
-        self.player = get_players(self.object, self.request.user)[1]
+        self.player = get_players(self.object, self.request.user)[0]
         self.playfield = self.object.get_playfield()
         notification_text, status = self.get_notification()
         context.update({
@@ -99,7 +99,8 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
         game = form.cleaned_data['game']
         playfield = game.get_playfield()
 
-        opponent_user, player, opponent = get_players(game, self.request.user)
+        opponent_user = game.get_opponent_user(self.request.user)
+        player, opponent = get_players(game, self.request.user)
 
         if playfield.is_game_over():
             winner = playfield.get_winner()
@@ -109,8 +110,7 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
                                  ['opponent_moved', player, move.move])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['game_over', get_result(opponent, winner)])
-            game.is_active = False
-            game.save()
+            change_game_status(game, self.request.user)
             return HttpResponse()
 
         else:
@@ -155,21 +155,28 @@ def decline_invite(request, invite_pk):
 
 
 @login_required
-def replay(request, pk):
+def replay_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
-
-    if not request.user == game.first_user and not request.user == game.second_user:
-        raise Http404
-
-    game.is_active = True
-    game.save()
-    game.move_set.all().delete()
-
-    opponent_user, player, opponent = get_players(game, request.user)
+    opponent = change_game_status(game, request.user)[1]
+    opponent_user = game.get_opponent_user(request.user)
 
     redis_message = ugettext(
         u"{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> Refuse</a>"
-    ).format(request.user, 'url')
+    ).format(request.user, reverse('game_refuse', args=[pk]))
     strict_redis.publish('%d' % opponent_user.pk, ['replay', redis_message,
                          ugettext(u"Your turn."), opponent])
     return HttpResponse(ugettext(u"Your opponents turn."))
+
+
+@login_required
+def refuse_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    change_game_status(game, request.user)
+    opponent_user = game.get_opponent_user(request.user)
+
+    redis_message = ugettext(u"{0} has refused game.").format(request.user)
+    strict_redis.publish('%d' % opponent_user.pk, ['refuse', redis_message, pk])
+
+    if request.method == 'POST':
+        return HttpResponse(ugettext(u"Game finished."))
+    return redirect('game_user_list')

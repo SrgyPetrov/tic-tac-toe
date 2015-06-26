@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 16:25+0300\n"
+"POT-Creation-Date: 2015-06-26 13:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,10 @@ msgstr "Игра закончена"
 msgid "Try again?"
 msgstr "Попробуйте еще раз?"
 
+#: templates/game/game_detail.html:12
+msgid "Back to the list of users"
+msgstr "Вернуться к списку пользователей"
+
 #: templates/game/game_detail.html:26 templates/game/game_user_list.html:19
 msgid "logout"
 msgstr "выход"
@@ -51,9 +55,19 @@ msgstr "Выберите пользователя для совместной и
 msgid "No users online"
 msgstr "Нет пользователей онлайн"
 
+#: templates/game/tags/active_games.html:5
 #: templates/game/tags/invitations.html:5 templates/notifications.html:4
 msgid "Notifications"
 msgstr "Уведомления"
+
+#: templates/game/tags/active_games.html:9
+#, python-format
+msgid "The game with %(opponent)s continues <a href='%(url_path)s'>here.</a>"
+msgstr "Игра с %(opponent)s продолжается <a href='%(url_path)s'>здесь.</a>"
+
+#: templates/game/tags/active_games.html:10
+msgid "Refuse"
+msgstr "Отказаться"
 
 #: templates/game/tags/invitations.html:8
 #, python-format

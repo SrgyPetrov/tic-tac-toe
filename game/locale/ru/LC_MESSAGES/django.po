@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 00:33+0300\n"
+"POT-Creation-Date: 2015-06-26 13:30+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,7 +35,7 @@ msgstr "второй игрок"
 msgid "is active"
 msgstr "активна"
 
-#: models.py:17 models.py:46
+#: models.py:17 models.py:49
 msgid "game"
 msgstr "игра"
 
@@ -43,31 +43,31 @@ msgstr "игра"
 msgid "games"
 msgstr "игры"
 
-#: models.py:47
+#: models.py:50
 msgid "user"
 msgstr "игрок"
 
-#: models.py:48
+#: models.py:51
 msgid "move"
 msgstr "перемещение"
 
-#: models.py:51
+#: models.py:54
 msgid "game move"
 msgstr "игровое перемещение"
 
-#: models.py:52
+#: models.py:55
 msgid "game moves"
 msgstr "игровые перемещения"
 
-#: utils.py:6
+#: utils.py:7
 msgid "You won!"
 msgstr "Вы победили!"
 
-#: utils.py:8
+#: utils.py:9
 msgid "You lost the game."
 msgstr "Вы проиграли."
 
-#: utils.py:10
+#: utils.py:11
 msgid "Its a tie!"
 msgstr "Ничья!"
 
@@ -90,11 +90,11 @@ msgstr ""
 msgid "Invite was successfully sent."
 msgstr "Приглашение успешно отправлено."
 
-#: views.py:89 views.py:118 views.py:174
+#: views.py:89 views.py:118 views.py:167
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:90 views.py:119 views.py:175
+#: views.py:90 views.py:119 views.py:168
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
@@ -116,7 +116,7 @@ msgstr "{0} отклонил ваше приглашение."
 msgid "Invitation declined."
 msgstr "Приглашение отклонено."
 
-#: views.py:171
+#: views.py:164
 #, python-brace-format
 msgid ""
 "{0} started game again. <a href='{1}' class='btn btn-danger refuse-link'> "
@@ -124,3 +124,12 @@ msgid ""
 msgstr ""
 "{0} начал игру заново. <a href='{1}' class='btn btn-danger refuse-link'> "
 "Отказаться</a>"
+
+#: views.py:177
+#, python-brace-format
+msgid "{0} has refused game."
+msgstr "{0} отказался от игры."
+
+#: views.py:181
+msgid "Game finished."
+msgstr "Игра закончена."

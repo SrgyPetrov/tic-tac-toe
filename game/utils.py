@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext
+from django.http import Http404
 
 
 def get_result(player, winner):
@@ -12,6 +13,21 @@ def get_result(player, winner):
 
 def get_players(game, user):
     if game.first_user == user:
-        return game.second_user, 'x', 'o'
+        return 'x', 'o'
     else:
-        return game.first_user, 'o', 'x'
+        return 'o', 'x'
+
+
+def change_game_status(game, user):
+    if not user == game.first_user and not user == game.second_user:
+        raise Http404
+
+    if game.is_active is True:
+        game.is_active = False
+        game.save()
+    else:
+        game.is_active = True
+        game.save()
+        game.move_set.all().delete()
+
+    return get_players(game, user)

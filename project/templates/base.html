@@ -36,10 +36,8 @@
           {% block content %}{% endblock content %}
         </div>
         <div class="col-md-3 notifications-container">
+          {% block notifications %}{% endblock notifications %}
           {% invitations %}
-          {% block notifications %}
-            {% include "notifications.html" %}
-          {% endblock notifications %}
         </div>
       </div>
     </div>

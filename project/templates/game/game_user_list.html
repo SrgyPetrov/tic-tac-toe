@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n game %}
 {% block content %}
 
 <div class="row">
@@ -18,3 +18,8 @@
 {% block navbar %}
   <p class="navbar-text navbar-right">{{ user.username }} (<a href="{% url 'users_logout' %}" class="navbar-link">{% trans "logout" %}</a>)</p>
 {% endblock navbar %}
+
+{% block notifications %}
+  {% include "notifications.html" %}
+  {% active_games %}
+{% endblock notifications %}

@@ -9,6 +9,7 @@
   <div class="gameover">
     <h3>{% trans "Game over" %}</h3>
     <a href="javascript:;" data-url="{% url 'game_replay' object.pk %}" class="replay">{% trans "Try again?" %}</a>
+    <a href="{% url 'game_user_list' %}" class="hidden game-refused">{% trans "Back to the list of users" %}</a>
   </div>
 {% endblock content %}
 

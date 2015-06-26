@@ -1,0 +1,15 @@
+{% load i18n game %}
+{% for object in object_list %}
+  <div class="panel panel-info active-game" id="active-game-{{ object.pk }}">
+    <div class="panel-heading">
+      <h3 class="panel-title">{% trans "Notifications" %}</h3>
+    </div>
+    <div class="panel-body">
+      {% url 'game_detail' object.pk as url_path %}
+      {% blocktrans with opponent=object|opponent:user %}The game with {{ opponent }} continues <a href='{{ url_path }}'>here.</a>{% endblocktrans %}
+      <a href="javascript:;" data-url="{% url 'game_refuse' object.pk %}" class='btn btn-danger refuse-link'> {% trans "Refuse" %}</a>
+    </div>
+  </div>
+{% endfor %}
+
+

@@ -31,6 +31,9 @@ class Game(models.Model):
                 playfield.cells[move.move] = 'o'
         return playfield
 
+    def get_opponent_user(self, user):
+        return self.second_user if self.first_user == user else self.first_user
+
 
 class Invite(models.Model):
 

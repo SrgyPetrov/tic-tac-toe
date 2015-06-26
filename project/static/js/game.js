@@ -30,6 +30,14 @@ socket.on("game_over", function(obj){
   $(".gameover").animate({opacity: "show"}, "slow");
 });
 
+socket.on("refuse", function(obj){
+  SetNotificationMessage(obj[0], "danger");
+  $(".gameover .replay").addClass('hidden');
+  $(".gameover .game-refused").removeClass('hidden');
+  $(".gameover").animate({opacity: "show"}, "slow");
+  $("#active-game-" + obj[1]).remove();
+});
+
 socket.on("replay", function(obj){
   ClearPlayfield();
   current_player = obj[2];
@@ -155,6 +163,17 @@ $('.game-container').on('click', '.replay', function (e) {
     if (data.length) {
       ClearPlayfield();
       SetNotificationMessage(data, "warning");
+    }
+  });
+});
+
+$('.active-game').on('click', '.refuse-link', function (e) {
+  var $this = $(this)
+  var $url = $this.data('url');
+  $.post($url, {}, function(data) {
+    if (data.length) {
+      $this.closest('.panel').remove();
+      SetNotificationMessage(data, "success", true);
     }
   });
 });
