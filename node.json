@@ -1,6 +1,6 @@
 {
   "run_list": [ "apt", "apache", "packages", "git", "curl", "python", "node",
-                "nginx", "postgresql::server", "project"],
+                "nginx", "postgresql::server", "project", "redis"],
   "packages": {
     "default": [ "libjpeg8-dev", "zlib1g-dev", "libfreetype6-dev", "liblcms1-dev" ]
   }
