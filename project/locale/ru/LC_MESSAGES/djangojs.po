@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 16:02+0300\n"
+"POT-Creation-Date: 2015-06-27 16:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,12 +40,12 @@ msgstr "%s отклонил ваше приглашение."
 msgid "A new game with %s has started <a href='%s'>here.</a>"
 msgstr "Новая игра с %s началась <a href='%s'>здесь.</a>"
 
-#: static/js/game.js:43
+#: static/js/game.js:47
 #, javascript-format
 msgid "%s has refused game."
 msgstr "%s отказался от игры."
 
-#: static/js/game.js:53
+#: static/js/game.js:58
 #, javascript-format
 msgid ""
 "%s started game again. <a href='%s' class='btn btn-danger refuse-link'> "
@@ -54,18 +54,27 @@ msgstr ""
 "%s начал игру заново. <a href='%s' class='btn btn-danger refuse-link'> "
 "Отказаться</a>"
 
-#: static/js/game.js:57 static/js/game.js:65
+#: static/js/game.js:61 static/js/game.js:74
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: static/js/game.js:148
+#: static/js/game.js:63
+#, javascript-format
+msgid ""
+"%s started game again <a href='%s'> here.                       </a><a "
+"href='%s' class='btn btn-danger refuse-link'> Refuse</a>"
+msgstr ""
+"%s начал игру заново <a href='%s'> здесь.                       </a><a "
+"href='%s' class='btn btn-danger refuse-link'> Отказаться</a>"
+
+#: static/js/game.js:157
 msgid "You won!"
 msgstr "Вы победили!"
 
-#: static/js/game.js:150
+#: static/js/game.js:159
 msgid "You lost the game."
 msgstr "Вы проиграли."
 
-#: static/js/game.js:152
+#: static/js/game.js:161
 msgid "Its a tie!"
 msgstr "Ничья!"
