@@ -64,7 +64,7 @@ socket.on("replay", function(obj){
   } else {
     message = gettext("%s started game again <a href='%s'> here. \
                       </a><a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
-    fmessage = interpolate(message, [obj[0], obj[2], "/" + lang + obj[1]]);
+    fmessage = interpolate(message, [obj[0], "/" + lang + obj[2], "/" + lang + obj[1]]);
   }
   SetNotificationMessage(fmessage, 'info', true);
 });
