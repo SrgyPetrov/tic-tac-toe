@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 16:06+0300\n"
+"POT-Creation-Date: 2015-06-27 14:26+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +19,14 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: forms.py:15
+#: forms.py:19
 msgid "You have already invited this user to game."
 msgstr "Вы уже пригласили этого пользователя в игру."
+
+#: forms.py:23
+#, python-format
+msgid "%s has already invited you to the game."
+msgstr "%s уже пригласил вас в игру."
 
 #: models.py:10
 msgid "first user"
@@ -59,38 +64,38 @@ msgstr "игровое перемещение"
 msgid "game moves"
 msgstr "игровые перемещения"
 
-#: utils.py:7
+#: utils.py:10
 msgid "You won!"
 msgstr "Вы победили!"
 
-#: utils.py:9
+#: utils.py:12
 msgid "You lost the game."
 msgstr "Вы проиграли."
 
-#: utils.py:11
+#: utils.py:14
 msgid "Its a tie!"
 msgstr "Ничья!"
 
-#: views.py:43
+#: views.py:42
 msgid "Invite was successfully sent."
 msgstr "Приглашение успешно отправлено."
 
-#: views.py:85
+#: views.py:84
 msgid "Your turn."
 msgstr "Ваш ход."
 
-#: views.py:86 views.py:115 views.py:156
+#: views.py:85 views.py:114 views.py:155
 msgid "Your opponents turn."
 msgstr "Ход соперника."
 
-#: views.py:118
+#: views.py:117
 msgid "Error occured."
 msgstr "Произошла ошибка."
 
-#: views.py:145
+#: views.py:144
 msgid "Invitation declined."
 msgstr "Приглашение отклонено."
 
-#: views.py:168
+#: views.py:167
 msgid "Game finished."
 msgstr "Игра закончена."

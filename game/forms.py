@@ -1,4 +1,3 @@
-from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import ugettext as _
 from django import forms
 
@@ -10,11 +9,21 @@ class InviteForm(forms.ModelForm):
     class Meta:
         model = Invite
         fields = ['invitee', 'inviter']
-        error_messages = {
-            NON_FIELD_ERRORS: {
-                'unique_together': _(u"You have already invited this user to game."),
-            }
-        }
+
+    def clean(self):
+        cleaned_data = super(InviteForm, self).clean()
+        invitee = cleaned_data.get('invitee')
+        inviter = cleaned_data.get('inviter')
+
+        if Invite.objects.filter(invitee=invitee, inviter=inviter).exists():
+            raise forms.ValidationError(_(u"You have already invited this user to game."))
+
+        if Invite.objects.filter(invitee=inviter, inviter=invitee).exists():
+            raise forms.ValidationError(
+                _(u"%s has already invited you to the game.") % invitee.username
+            )
+
+        return cleaned_data
 
 
 class CreateMoveForm(forms.ModelForm):
