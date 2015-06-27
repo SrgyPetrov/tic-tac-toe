@@ -39,3 +39,10 @@ def change_game_status(game, user):
 def reverse_no_i18n(viewname, *args, **kwargs):
     url = reverse(viewname, *args, **kwargs)
     return re.sub(r'^/[^/]*', '', url)
+
+
+def swap_users(game, user):
+    if game.second_user == user:
+        game.first_user, game.second_user = game.second_user, game.first_user
+        game.save()
+    return

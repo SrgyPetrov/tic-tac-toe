@@ -57,6 +57,8 @@ socket.on("replay", function(obj){
   if ($('.playfield').length) {
     message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
     fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
+    player = 'o';
+    current_player = 'o';
     ClearPlayfield();
     SetNotificationMessage(gettext("Your turn."), 'warning');
   } else {
@@ -68,12 +70,14 @@ socket.on("replay", function(obj){
 });
 
 socket.on("opponent_moved", function(obj){
-  $('#cell' + obj[1]).html(obj[0]);
-  $('#cell' + obj[1]).removeClass().addClass('checked-' + obj[0]);
-  if (typeof obj[2] == 'undefined' && $('.playfield').length) {
-    SetNotificationMessage(gettext("Your turn."), "warning");
+  if ($('.playfield').length) {
+    $('#cell' + obj[1]).html(obj[0]);
+    $('#cell' + obj[1]).removeClass().addClass('checked-' + obj[0]);
+    if (typeof obj[2] == 'undefined') {
+      SetNotificationMessage(gettext("Your turn."), "warning");
+    }
+    SwapUser();
   }
-  SwapUser();
 });
 
 function MakeMove(sender, move) {
@@ -192,10 +196,10 @@ $('.notifications-container').on('click', '#decline', function (e) {
 
 $('.game-container').on('click', '.replay', function (e) {
   $.post($(this).data('url'), {}, function(data) {
-    if (data.length) {
-      ClearPlayfield();
-      SetNotificationMessage(data, "warning");
-    }
+    SetNotificationMessage(data, "warning");
+    ClearPlayfield();
+    player = 'x';
+    current_player = 'o';
   });
 });
 

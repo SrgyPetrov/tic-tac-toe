@@ -10,7 +10,7 @@ from django.conf import settings
 
 from .models import Game, Invite
 from .forms import InviteForm, CreateMoveForm
-from .utils import get_result, get_players, change_game_status, reverse_no_i18n
+from .utils import get_result, get_players, change_game_status, reverse_no_i18n, swap_users
 from .mixins import LoginRequiredMixin, RequirePostMixin
 
 
@@ -149,8 +149,9 @@ def decline_invite(request, invite_pk):
 @login_required
 def replay_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
-    change_game_status(game, request.user)
     opponent_user = game.get_opponent_user(request.user)
+    change_game_status(game, request.user)
+    swap_users(game, request.user)
 
     strict_redis.publish('%d' % opponent_user.pk, ['replay', request.user.username,
                          reverse_no_i18n('game_refuse', args=[pk]),
