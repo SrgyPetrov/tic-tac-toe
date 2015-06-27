@@ -176,7 +176,7 @@ $('.notifications-container').on('click', '#decline', function (e) {
   $.post($url, {}, function(data) {
     if (data.length) {
       $this.closest('.panel').not("#notification-panel").remove();
-      SetNotificationMessage(data, "success");
+      SetNotificationMessage(data, "success", true);
     }
   });
 });
