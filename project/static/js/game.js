@@ -34,9 +34,13 @@ socket.on("game_started", function(obj){
 });
 
 socket.on("game_over", function(obj){
-  message = GetGamoverText(obj[0], obj[1]);
-  SetNotificationMessage(message[0], message[1]);
-  $(".gameover").animate({opacity: "show"}, "slow");
+  if ($('.playfield').length) {
+    message = GetGamoverText(obj[0], obj[1]);
+    SetNotificationMessage(message[0], message[1]);
+    $(".gameover").animate({opacity: "show"}, "slow");
+  } else {
+    $("#active-game-" + obj[2]).remove();
+  };
 });
 
 socket.on("refuse", function(obj){
@@ -50,18 +54,23 @@ socket.on("refuse", function(obj){
 });
 
 socket.on("replay", function(obj){
-  message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
-  fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
-  ClearPlayfield();
-  current_player = obj[2];
-  SetNotificationMessage(gettext("Your turn."), 'warning');
+  if ($('.playfield').length) {
+    message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
+    fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
+    ClearPlayfield();
+    SetNotificationMessage(gettext("Your turn."), 'warning');
+  } else {
+    message = gettext("%s started game again <a href='%s'> here. \
+                      </a><a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
+    fmessage = interpolate(message, [obj[0], obj[2], "/" + lang + obj[1]]);
+  }
   SetNotificationMessage(fmessage, 'info', true);
 });
 
 socket.on("opponent_moved", function(obj){
   $('#cell' + obj[1]).html(obj[0]);
   $('#cell' + obj[1]).removeClass().addClass('checked-' + obj[0]);
-  if (typeof obj[2] == 'undefined') {
+  if (typeof obj[2] == 'undefined' && $('.playfield').length) {
     SetNotificationMessage(gettext("Your turn."), "warning");
   }
   SwapUser();

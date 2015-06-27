@@ -55,15 +55,22 @@ class GameDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(GameDetailView, self).get_context_data(**kwargs)
-        self.player = get_players(self.object, self.request.user)[0]
-        self.playfield = self.object.get_playfield()
-        notification_text, status = self.get_notification()
+        player = get_players(self.object, self.request.user)[0]
+        playfield = self.object.get_playfield()
+
+        if playfield.is_game_over():
+            notification_text, status = get_result(playfield, player)
+        else:
+            current_player = self.get_current_player()
+            notification_text = self.get_current_player_notification(player, current_player)
+            status = 'warning'
+
         context.update({
-            'playfield': self.playfield,
-            'player': self.player,
+            'playfield': playfield,
+            'player': player,
             'notification_text': notification_text,
             'status': status,
-            'current_player': self.get_current_player()
+            'current_player': current_player
         })
         return context
 
@@ -71,18 +78,12 @@ class GameDetailView(LoginRequiredMixin, DetailView):
         moves = self.object.move_set.all().order_by('-id')
         if moves:
             return 'o' if moves[0].user == self.object.first_user else 'x'
-        return 'x'
+        return 'o'
 
-    def get_notification(self):
-        if self.playfield.is_game_over():
-            winner = self.playfield.get_winner()
-            return get_result(self.player, winner)
-        return self.get_current_move_text()
-
-    def get_current_move_text(self):
-        if self.player == 'x':
-            return _(u'Your turn.'), 'warning'
-        return _(u'Your opponents turn.'), 'warning'
+    def get_current_player_notification(self, player, current_player):
+        if player == current_player:
+            return _(u'Your turn.')
+        return _(u'Your opponents turn.')
 
 
 class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
@@ -100,11 +101,11 @@ class CreateMoveView(RequirePostMixin, LoginRequiredMixin, BaseCreateView):
         if playfield.is_game_over():
             winner = playfield.get_winner()
             strict_redis.publish('%d' % self.request.user.pk,
-                                 ['game_over', player, winner])
+                                 ['game_over', player, winner, game.pk])
             strict_redis.publish('%d' % opponent_user.pk,
                                  ['opponent_moved', player, move.move, 'game_over'])
             strict_redis.publish('%d' % opponent_user.pk,
-                                 ['game_over', opponent, winner])
+                                 ['game_over', opponent, winner, game.pk])
             change_game_status(game, self.request.user)
             return HttpResponse()
 
@@ -148,10 +149,12 @@ def decline_invite(request, invite_pk):
 @login_required
 def replay_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
-    opponent = change_game_status(game, request.user)[1]
+    change_game_status(game, request.user)
     opponent_user = game.get_opponent_user(request.user)
+
     strict_redis.publish('%d' % opponent_user.pk, ['replay', request.user.username,
-                         reverse_no_i18n('game_refuse', args=[pk]), opponent])
+                         reverse_no_i18n('game_refuse', args=[pk]),
+                         reverse_no_i18n('game_detail', args=[pk])])
     return HttpResponse(ugettext(u"Your opponents turn."))
 
 
