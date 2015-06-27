@@ -145,6 +145,9 @@ function RedrawUserList(users) {
   if($links.children().length) {
     $('#title-empty', $container).addClass("hidden");
     $('#title-users-exists', $container).removeClass("hidden");
+  } else {
+    $('#title-users-exists', $container).addClass("hidden");
+    $('#title-empty', $container).removeClass("hidden");
   }
 }
 
