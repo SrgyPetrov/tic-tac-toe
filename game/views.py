@@ -77,8 +77,8 @@ class GameDetailView(LoginRequiredMixin, DetailView):
     def get_current_player(self):
         moves = self.object.move_set.all().order_by('-id')
         if moves:
-            return 'o' if moves[0].user == self.object.first_user else 'x'
-        return 'o'
+            return 'x' if moves[0].user == self.object.first_user else 'o'
+        return 'x'
 
     def get_current_player_notification(self, player, current_player):
         if player == current_player:

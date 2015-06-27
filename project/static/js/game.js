@@ -57,8 +57,8 @@ socket.on("replay", function(obj){
   if ($('.playfield').length) {
     message = gettext("%s started game again. <a href='%s' class='btn btn-danger refuse-link'> Refuse</a>");
     fmessage = interpolate(message, [obj[0], "/" + lang + obj[1]]);
-    player = 'o';
-    current_player = 'o';
+    player = 'x';
+    current_player = 'x';
     ClearPlayfield();
     SetNotificationMessage(gettext("Your turn."), 'warning');
   } else {
@@ -97,7 +97,7 @@ function MakeMove(sender, move) {
 }
 
 function SwapUser() {
-  var swap = player == "x" ? "o" : "x";
+  var swap = player == "o" ? "x" : "o";
   if (current_player == player) {
     current_player = swap;
   } else {
@@ -198,8 +198,8 @@ $('.game-container').on('click', '.replay', function (e) {
   $.post($(this).data('url'), {}, function(data) {
     SetNotificationMessage(data, "warning");
     ClearPlayfield();
-    player = 'x';
-    current_player = 'o';
+    player = 'o';
+    current_player = 'x';
   });
 });
 

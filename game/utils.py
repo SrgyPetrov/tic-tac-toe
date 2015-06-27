@@ -17,9 +17,9 @@ def get_result(playfield, player):
 
 def get_players(game, user):
     if game.first_user == user:
-        return 'x', 'o'
-    else:
         return 'o', 'x'
+    else:
+        return 'x', 'o'
 
 
 def change_game_status(game, user):

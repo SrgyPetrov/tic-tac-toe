@@ -26,9 +26,9 @@ class Game(models.Model):
 
         for move in moves:
             if move.user == self.first_user:
-                playfield.cells[move.move] = 'x'
-            else:
                 playfield.cells[move.move] = 'o'
+            else:
+                playfield.cells[move.move] = 'x'
         return playfield
 
     def get_opponent_user(self, user):
