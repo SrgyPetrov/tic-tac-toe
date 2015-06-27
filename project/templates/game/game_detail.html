@@ -18,7 +18,7 @@
     var create_move_url = "{% url 'game_create_move' %}";
     var player = "{{ player }}";
     var game_id = {{ object.pk }};
-    var current_player = "x";
+    var current_player = "{{ current_player }}";
   </script>
 {% endblock extrajs %}
 
